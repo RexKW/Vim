@@ -26,9 +26,14 @@ struct CalorieTargetView: View {
                 .bold()
                 .padding(.bottom, 9)
             
-            Text("Everybody starts somewhere! Chose the target caloriest that suits your ability and daily routine")
+            Text("""
+            Everybody starts somewhere! Chose 
+            the target caloriest that suits your ability 
+            and daily routine
+            """)
                 .font(.system(size: 17))
                 .padding(.bottom, 41)
+                .multilineTextAlignment(.center)
             
             
             
@@ -118,13 +123,14 @@ struct CalorieTargetView: View {
             - \(Text("\(steps) steps").bold()) on the run.
             - \(Text("\(steps / 2) stairs steps.").bold())
             """)
-            .padding(.bottom, 100)
+            .padding(.bottom, 150)
             
             Text("""
             The target calorie can be completed
             anytime, but \(Text("2 weeks of inactivity").bold())
             will result in a \(Text("reset").bold())
             """)
+            .font(.system(size: 12))
             .foregroundColor(Color("Color_CalorieTargetView_Text"))
             .multilineTextAlignment(.center)
             .padding(.bottom,18)
