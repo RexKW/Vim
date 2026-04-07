@@ -1,0 +1,17 @@
+//
+//  Vim_Challenge1App.swift
+//  Vim_Challenge1
+//
+//  Created by Rex Kenny Wirasantoso on 07/04/26.
+//
+
+import SwiftUI
+
+@main
+struct Vim_Challenge1App: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
