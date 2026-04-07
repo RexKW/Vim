@@ -6,3 +6,19 @@
 //
 
 import Foundation
+import SwiftData
+
+@Model
+class Session{
+    var name: String
+    var timeStamp: Date
+    var duration: Int
+    var caloriesBurned: Int
+    
+    init(name: String, timeStamp: Date, duration: Int, caloriesBurned: Int) {
+        self.name = name
+        self.timeStamp = timeStamp
+        self.duration = duration
+        self.cal,oriesBurned = caloriesBurned
+    }
+}

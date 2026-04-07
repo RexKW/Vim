@@ -14,5 +14,5 @@ struct JourneySheetDetailView: View {
 }
 
 #Preview {
-    JourneyDetailView()
+    JourneySheetDetailView()
 }
