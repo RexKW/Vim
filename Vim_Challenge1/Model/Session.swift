@@ -19,6 +19,6 @@ class Session{
         self.name = name
         self.timeStamp = timeStamp
         self.duration = duration
-        self.cal,oriesBurned = caloriesBurned
+        self.caloriesBurned = caloriesBurned
     }
 }
