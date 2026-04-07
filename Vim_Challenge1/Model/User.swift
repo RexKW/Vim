@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class User {
-    var newUser:bool
+    var newUser: Bool
     
     init()
     {
