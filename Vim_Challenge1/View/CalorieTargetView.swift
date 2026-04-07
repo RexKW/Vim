@@ -30,14 +30,17 @@ struct CalorieTargetView: View {
                 .font(.system(size: 17))
                 .padding(.bottom, 41)
             
+            
+            
             Picker("Difficulty", selection: $select_index) {
                 Text("Easy").tag(0)
                 Text("Medium").tag(1)
                 Text("Hard").tag(2)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding(.bottom,63)
-            .scaleEffect(0.9)
+            .frame(maxWidth: 250)
+            .padding(.bottom,20)
+            .scaleEffect(1.2)
 //            Rectangle()
 //                .fill(Color.blue)
 //                .frame(width: 350, height: 50)
@@ -65,13 +68,13 @@ struct CalorieTargetView: View {
                         )
                 }
                 
-                Spacer()
-                
-                // 🔥 Angka tengah
-                Text("\(value)")
-                    .font(.system(size: 64, weight: .bold))
-                
-                Spacer()
+                VStack(spacing: 2){
+                    Text("\(value)")
+                        .font(.system(size: 60, weight: .bold))
+                    Text("Kcal")
+                        .font(.system(size: 22, weight: .bold))
+                }
+                .frame(maxWidth: .infinity)
                 
                 Button {
                     value += 10
@@ -86,10 +89,10 @@ struct CalorieTargetView: View {
                         )
                 }
             }
+            .frame(maxWidth: 270)
             .padding(.horizontal, 24)
+            .padding(.bottom, 40)
             
-            Text("Kcal")
-                .font(.system(size: 20, weight: .semibold))
             
         .padding()
             Text("""
