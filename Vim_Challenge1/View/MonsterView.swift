@@ -8,11 +8,108 @@
 import SwiftUI
 
 struct MonsterView: View {
+    @State private var isWorkout: Bool = false
+    @State private var isJourney: Bool = false
+    
     var body: some View {
-        Text("Monster VIew")
+    
+        
+        VStack{
+            NavigationStack(){
+                ZStack{
+                    Image("Monster").resizable().scaledToFit().frame(width: .infinity).padding(.bottom, -200)
+                    VStack{
+                        VStack{
+                            Text("Rex").fontWeight(.heavy).padding(.bottom,-5)
+                            HealthBar(value: 100)
+                        }
+                    
+                        Spacer()
+                        if(!isWorkout){
+                            Button(action:{
+                                isWorkout = true
+                            }){
+                                Text("Attack").foregroundColor(.white).padding(.horizontal, 90).padding(.vertical, 10)
+                            }.buttonStyle(BorderedProminentButtonStyle()).padding(.bottom,60)
+                        }
+                        
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading){
+                        VStack{
+                            Text("Session 1")
+                            Text("1 Apr")
+                        }.fixedSize()
+                    }.sharedBackgroundVisibility(.hidden)
+                    ToolbarItem(placement: .primaryAction){
+                        Button(action:{
+                            isJourney = true
+                        }){
+                            Image(systemName: "shield.fill").foregroundColor(Color(.white))
+                        }.buttonStyle(.borderedProminent)
+                            .tint(.blue)
+                    }
+                }
+            }.sheet(isPresented: $isWorkout, ){
+                WorkoutSheetView()
+                    . presentationBackgroundInteraction(. enabled)
+                    .presentationDetents([.height(300), .height(600)])
+            }
+            .sheet(isPresented: $isJourney){
+                JourneyView()
+            }
+        }
+        
+    }
+}
+
+func HealthBar(value: Int) -> some View {
+    ZStack{
+        ZStack(alignment: .leading){
+            Rectangle()
+                .frame(width: 250, height: 40)
+                .cornerRadius(50)
+                .foregroundColor(.red)
+            ZStack(alignment: .leading){
+                ZStack(alignment:.center){
+                    Rectangle()
+                        .frame(width: 245, height: 30)
+                        .cornerRadius(50)
+                        .foregroundColor(.white)
+                    Text("300 HP").foregroundColor(Color.red).fontWeight(Font.Weight.black)
+                }
+
+                ZStack(alignment:.center){
+                    
+
+                    Text("300 HP").foregroundColor(Color.white).fontWeight(Font.Weight.black).frame(width: 245, height: 30).background(Color.green).mask(
+                        HStack {
+                            Rectangle()
+                                .frame(width: 120)
+                            Spacer(minLength: 0)
+                        }
+                    )
+                }.clipShape(Rectangle()).frame(width: 245)
+                
+            }.clipShape(Capsule())
+
+            Rectangle()
+                .frame(width: 60, height: 40)
+                .foregroundColor(Color.red)
+                .cornerRadius(50)
+            Image(systemName: "heart.fill")
+                .font(.system(size: 24))
+                .foregroundColor(Color.white)
+                .frame(width: 60, height: 50)
+                .cornerRadius(14)
+        }
+
+
     }
 }
 
 #Preview {
     MonsterView()
 }
+
