@@ -37,6 +37,20 @@ struct CalorieTargetView: View {
                 Text("Medium").tag(1)
                 Text("Hard").tag(2)
             }
+            .onChange(of: select_index){
+                oldValue,
+                newValue in
+                switch newValue {
+                case 0:
+                    value = 500
+                case 1:
+                    value = 750
+                case 2:
+                    value = 1000
+                default:
+                    break
+                }
+            }
             .pickerStyle(SegmentedPickerStyle())
             .frame(maxWidth: 250)
             .padding(.bottom,20)
@@ -54,13 +68,16 @@ struct CalorieTargetView: View {
 //                .padding(.bottom,14)
             HStack {
                 Button {
-                    if value > 0 {
+                    if value > 450 {
                         value -= 10
+                    }
+                    else{
+                        value = 450
                     }
                 } label: {
                     Circle()
                         .fill(Color.gray.opacity(0.2))
-                        .frame(width: 60, height: 60)
+                        .frame(width: 46, height: 42)
                         .overlay(
                             Image(systemName: "minus")
                                 .font(.title2)
@@ -77,11 +94,11 @@ struct CalorieTargetView: View {
                 .frame(maxWidth: .infinity)
                 
                 Button {
-                    value += 10
+                    value += 50
                 } label: {
                     Circle()
                         .fill(Color.gray.opacity(0.2))
-                        .frame(width: 60, height: 60)
+                        .frame(width: 46, height: 42)
                         .overlay(
                             Image(systemName: "plus")
                                 .font(.title2)
@@ -90,17 +107,18 @@ struct CalorieTargetView: View {
                 }
             }
             .frame(maxWidth: 270)
-            .padding(.horizontal, 24)
             .padding(.bottom, 40)
             
+            var steps: Int {
+                Int(Double(value)/0.04)
+            }
             
-        .padding()
             Text("""
             This is equivalent to :
-            - \(Text("8 K Steps").bold()) on the run.
-            - \(Text("5K stairs steps").bold())
+            - \(Text("\(steps) steps").bold()) on the run.
+            - \(Text("\(steps / 2) stairs steps.").bold())
             """)
-            .padding(.bottom,100)
+            .padding(.bottom, 100)
             
             Text("""
             The target calorie can be completed
