@@ -67,10 +67,13 @@ struct MonsterView: View {
 func HealthBar(value: Int) -> some View {
     ZStack{
         ZStack(alignment: .leading){
+            //This is just for the red border
             Rectangle()
                 .frame(width: 250, height: 40)
                 .cornerRadius(50)
                 .foregroundColor(.red)
+            
+            //This is for the white backdrop of the health
             ZStack(alignment: .leading){
                 ZStack(alignment:.center){
                     Rectangle()
@@ -82,11 +85,11 @@ func HealthBar(value: Int) -> some View {
 
                 ZStack(alignment:.center){
                     
-
+                    //This is the green Healthbar to show shrinking
                     Text("300 HP").foregroundColor(Color.white).fontWeight(Font.Weight.black).frame(width: 245, height: 30).background(Color.green).mask(
                         HStack {
                             Rectangle()
-                                .frame(width: 120)
+                                .frame(width: 120) //Edit the size here to shrink
                             Spacer(minLength: 0)
                         }
                     )
@@ -94,6 +97,7 @@ func HealthBar(value: Int) -> some View {
                 
             }.clipShape(Capsule())
 
+            //This is the leftside heart
             Rectangle()
                 .frame(width: 60, height: 40)
                 .foregroundColor(Color.red)
