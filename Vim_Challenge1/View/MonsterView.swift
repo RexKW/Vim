@@ -10,6 +10,7 @@ import SwiftUI
 struct MonsterView: View {
     @State private var isWorkout: Bool = false
     @State private var isJourney: Bool = false
+    @State private var selectedDetent: PresentationDetent = .height(300)
     
     var body: some View {
         
@@ -58,9 +59,11 @@ struct MonsterView: View {
                 }
                 //sheet for workout
             }.sheet(isPresented: $isWorkout, ){
-                WorkoutSheetView()
-                    . presentationBackgroundInteraction(. enabled)
-                    .presentationDetents([.height(300), .height(600)])
+                WorkoutSheetView( currentDetent: $selectedDetent)
+                    .presentationBackgroundInteraction(. enabled)
+                    .presentationDetents(
+                        [.height(200), .height(400)],
+                        selection: $selectedDetent)
             }
             //sheet for journey
             .sheet(isPresented: $isJourney){
