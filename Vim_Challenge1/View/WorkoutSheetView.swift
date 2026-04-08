@@ -11,6 +11,8 @@ struct WorkoutSheetView: View {
     @State var calBurnedSheet: Bool = false
     @State private var isPaused = false
     @Binding var currentDetent: PresentationDetent
+    @EnvironmentObject var workoutVM: WorkoutViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack{
@@ -25,7 +27,7 @@ struct WorkoutSheetView: View {
                         .foregroundColor(.vibrantOrange)
                     
                     //stopwatch
-                    Text("00.00,00")
+                    Text(workoutVM.formattedTime)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                 }
@@ -37,6 +39,12 @@ struct WorkoutSheetView: View {
                 //play and pause button
                 Button(action: {
                     isPaused.toggle()
+                    if isPaused{
+                        workoutVM.pauseTimer()
+                    }
+                    else {
+                        workoutVM.startTimer()
+                    }
                 }) {
                     //change symbol based on isPaused status
                     Image(systemName: isPaused ? "play.fill" : "pause.fill")
@@ -72,7 +80,8 @@ struct WorkoutSheetView: View {
                 //end session button in sheet
                 VStack (alignment: .center) {
                     Button("End Session", systemImage: "xmark"){
-                        
+                        workoutVM.resetTimer()
+                        dismiss()
                     }
                     .frame(width: 300, height: 10)
                     .foregroundColor(Color.white)
@@ -86,6 +95,9 @@ struct WorkoutSheetView: View {
         }
         .padding(.top, 20)
         .animation(.spring(), value: currentDetent)
+        .onAppear() {
+            workoutVM.startTimer()
+        }
     }
 }
 
