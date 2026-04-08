@@ -57,39 +57,14 @@ struct CalorieTargetView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .onChange(of: value) { _, newValue in
+                valueswitchautomatic(value: Int(newValue))
+            }
             .frame(maxWidth: 250)
             .padding(.bottom,20)
             .scaleEffect(1.2)
-//            Rectangle()
-//                .fill(Color.blue)
-//                .frame(width: 350, height: 50)
-//                .cornerRadius(25)
-//                .padding(.bottom,63)
-//            
-//            Rectangle()
-//                .fill(Color.blue)
-//                .frame(width: 300, height: 100)
-//                .cornerRadius(20)
-//                .padding(.bottom,14)
             HStack {
-                Button {
-                    if value > 450 {
-                        value -= 10
-                    }
-                    else{
-                        value = 450
-                    }
-                } label: {
-                    Circle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(width: 46, height: 42)
-                        .overlay(
-                            Image(systemName: "minus")
-                                .font(.title2)
-                                .foregroundStyle(.black)
-                        )
-                }
-                
+                buttonminmax(plusorminus: "minus")
                 VStack(spacing: 2){
                     Text("\(value)")
                         .font(.system(size: 60, weight: .bold))
@@ -97,19 +72,7 @@ struct CalorieTargetView: View {
                         .font(.system(size: 22, weight: .bold))
                 }
                 .frame(maxWidth: .infinity)
-                
-                Button {
-                    value += 50
-                } label: {
-                    Circle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(width: 46, height: 42)
-                        .overlay(
-                            Image(systemName: "plus")
-                                .font(.title2)
-                                .foregroundStyle(.black)
-                        )
-                }
+                buttonminmax(plusorminus: "plus")
             }
             .frame(maxWidth: 270)
             .padding(.bottom, 40)
@@ -134,6 +97,7 @@ struct CalorieTargetView: View {
             .foregroundColor(Color("Color_CalorieTargetView_Text"))
             .multilineTextAlignment(.center)
             .padding(.bottom,18)
+            
             Rectangle()
                 .fill(Color.blue)
                 .frame(width: 272, height: 48)
@@ -144,6 +108,40 @@ struct CalorieTargetView: View {
                         .bold()
                         .font(.system(size: 18))
                 )
+        }
+    }
+    func buttonminmax(plusorminus: String) -> some View {
+        Button{
+            if plusorminus == "minus"{
+                if value > 450 {
+                    value -= 10
+                }
+                else{
+                    value = 450
+                }
+            }else{
+                value += 10
+            }
+        }label: {
+            Circle()
+                .fill(Color.gray.opacity(0.2))
+                .frame(width: 46, height: 42)
+                .overlay(
+                    Image(systemName: plusorminus)
+                        .font(.title2)
+                        .foregroundStyle(.black)
+                )
+        }
+    }
+    
+    func valueswitchautomatic(value:Int){
+        switch value{
+        case ..<750:
+            select_index = 0
+        case 750..<1000:
+            select_index = 1
+        default:
+            select_index = 2
         }
     }
 }
