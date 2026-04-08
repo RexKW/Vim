@@ -12,19 +12,22 @@ struct MonsterView: View {
     @State private var isJourney: Bool = false
     
     var body: some View {
-    
+        
         
         VStack{
             NavigationStack(){
                 ZStack{
+                    //monster including background
                     Image("Monster").resizable().scaledToFit().frame(width: .infinity).padding(.bottom, -200)
                     VStack{
                         VStack{
+                            //monster name
                             Text("Rex").fontWeight(.heavy).padding(.bottom,-5)
                             HealthBar(value: 100)
                         }
-                    
+                        
                         Spacer()
+                        //the workout button
                         if(!isWorkout){
                             Button(action:{
                                 isWorkout = true
@@ -37,11 +40,13 @@ struct MonsterView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading){
+                        //session section
                         VStack{
                             Text("Session 1")
                             Text("1 Apr")
                         }.fixedSize()
                     }.sharedBackgroundVisibility(.hidden)
+                    //journey button
                     ToolbarItem(placement: .primaryAction){
                         Button(action:{
                             isJourney = true
@@ -51,14 +56,17 @@ struct MonsterView: View {
                             .tint(.blue)
                     }
                 }
+                //sheet for workout
             }.sheet(isPresented: $isWorkout, ){
                 WorkoutSheetView()
                     . presentationBackgroundInteraction(. enabled)
                     .presentationDetents([.height(300), .height(600)])
             }
+            //sheet for journey
             .sheet(isPresented: $isJourney){
                 JourneyView()
             }
+            .background(.white)
         }
         
     }
@@ -89,7 +97,7 @@ func HealthBar(value: Int) -> some View {
                     Text("300 HP").foregroundColor(Color.white).fontWeight(Font.Weight.black).frame(width: 245, height: 30).background(Color.green).mask(
                         HStack {
                             Rectangle()
-                                .frame(width: 120) //Edit the size here to shrink
+                                .frame(width:120) //Edit the size here to shrink
                             Spacer(minLength: 0)
                         }
                     )
