@@ -31,9 +31,9 @@ struct CalorieTargetView: View {
             the target caloriest that suits your ability 
             and daily routine
             """)
-                .font(.system(size: 17))
-                .padding(.bottom, 41)
-                .multilineTextAlignment(.center)
+            .font(.system(size: 17))
+            .padding(.bottom, 41)
+            .multilineTextAlignment(.center)
             
             
             
@@ -42,24 +42,22 @@ struct CalorieTargetView: View {
                 Text("Medium").tag(1)
                 Text("Hard").tag(2)
             }
-            .onChange(of: select_index){
-                oldValue,
-                newValue in
+            .onChange(of: value) { _, newValue in
+                valueswitchautomatic(value: Int(newValue))
+            }
+            .onChange(of: select_index) { oldValue, newValue in
                 switch newValue {
                 case 0:
-                    value = 500
+                    if value >= 750 { value = 500 }
                 case 1:
-                    value = 750
+                    if value < 750 || value >= 1000 { value = 750 }
                 case 2:
-                    value = 1000
+                    if value < 1000 { value = 1000 }
                 default:
                     break
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: value) { _, newValue in
-                valueswitchautomatic(value: Int(newValue))
-            }
             .frame(maxWidth: 250)
             .padding(.bottom,20)
             .scaleEffect(1.2)
@@ -116,10 +114,11 @@ struct CalorieTargetView: View {
                 if value > 450 {
                     value -= 10
                 }
-                else{
+                else if value <= 450{
                     value = 450
+                    
                 }
-            }else{
+            }else if plusorminus == "plus"{
                 value += 10
             }
         }label: {
@@ -134,14 +133,19 @@ struct CalorieTargetView: View {
         }
     }
     
-    func valueswitchautomatic(value:Int){
-        switch value{
-        case ..<750:
-            select_index = 0
-        case 750..<1000:
-            select_index = 1
-        default:
-            select_index = 2
+    func valueswitchautomatic(value: Int) {
+        let targetIndex: Int
+        
+        if value < 750 {
+            targetIndex = 0
+        } else if value < 1000 {
+            targetIndex = 1
+        } else {
+            targetIndex = 2
+        }
+        
+        if select_index != targetIndex {
+            select_index = targetIndex
         }
     }
 }
