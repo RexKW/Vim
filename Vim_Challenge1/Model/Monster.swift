@@ -14,11 +14,15 @@ class Monster{
     var status: String
     var hp: Int
     var sessions: [Session]
+    var image: String
+    var deadImage: String
     
-    init(name: String,  hp: Int) {
+    init(name: String,  hp: Int, image:String, deadImage:String) {
         self.name = name
         self.status = "In Progress"
         self.hp = hp
+        self.image = image
+        self.deadImage = deadImage
         self.sessions = []
     }
 }
