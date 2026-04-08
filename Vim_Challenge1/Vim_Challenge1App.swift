@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct Vim_Challenge1App: App {
+    @StateObject private var workoutViewModel = WorkoutViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(workoutViewModel)
+                .modelContainer(for: [Monster.self])
+                .modelContainer(for: User.self)
         }
     }
 }

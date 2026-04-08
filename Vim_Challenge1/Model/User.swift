@@ -6,3 +6,15 @@
 //
 
 import Foundation
+import SwiftData
+
+@Model
+class User {
+    var newUser: Bool
+    
+    init()
+    {
+        newUser = false
+    }
+}
+
