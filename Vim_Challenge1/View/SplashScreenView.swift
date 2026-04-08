@@ -10,7 +10,7 @@ import SwiftUI
 struct SplashScreenView: View {
     var body: some View {
         VStack {
-            Image("vimIcon")
+            Image("vimLogo")
                 .resizable()
                 .frame(width: 150, height: 150)
             ///Ini nanti diganti icon
