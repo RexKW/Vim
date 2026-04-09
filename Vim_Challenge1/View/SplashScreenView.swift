@@ -29,7 +29,7 @@ struct SplashScreenView: View {
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 30)
                 .padding(.top, -5)
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 15) {
                 ///ganti icon
                 HStack {
                     // Circle()
