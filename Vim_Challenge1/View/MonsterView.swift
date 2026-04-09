@@ -90,7 +90,7 @@ struct MonsterView: View {
             }
             //sheet for journey
             .sheet(isPresented: $isJourney){
-                JourneyView(isJourney: $isJourney, monster: monster)
+                JourneyView(isJourney: $isJourney, monster: monsters)
             }
             .background(.white)
         }
