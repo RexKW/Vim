@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-        
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
+    
     var body: some View {
-        CalorieTargetView()
+        if hasCompletedOnboarding == true {
+            MonsterView()
+        }
+        else {
+            SplashScreenView(isFinished: $hasCompletedOnboarding)
+        }
     }
 }
 
