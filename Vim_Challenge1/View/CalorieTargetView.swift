@@ -168,7 +168,9 @@ struct CalorieTargetView: View {
         } else {
             let newmonster = Monster(
                 name: "rex",
-                hp: value
+                hp: value,
+                image: "image1",
+                deadImage: "deadImage1"
             )
             modelContext.insert(newmonster)
         }
