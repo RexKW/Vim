@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct JourneySheetDetailView: View {
+    let monster: Monster
+
     var body: some View {
         Text("Hello World")
     }
 }
 
 #Preview {
-    JourneySheetDetailView()
+    JourneySheetDetailView(
+        monster: Monster(
+            name: "Rex Mohawk",
+            hp: 0,
+            image: "Rex",
+            deadImage: "",
+            status: "In Progress"
+        )
+    )
 }

@@ -22,6 +22,7 @@ struct JourneyView: View {
         GridItem(.flexible()),
         GridItem(.flexible()),
     ]
+    
     var body: some View {
         
         NavigationStack{
@@ -33,70 +34,76 @@ struct JourneyView: View {
                         .font(.caption)
                         .padding(.top, 20)
                     
-                    
+                    //collection
                     LazyVGrid(columns: journeyColumns, spacing: 20) {
                         ForEach(dummyMonsters, id: \.self) { monster in
                             
-                            VStack(alignment: .center, spacing: 0) {
-                                
-                                Image(monster.image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 150, height: 120)
-                                    .offset(y: 30)
-                                    .clipShape(.rect)
-                                    .grayscale(monster.status != "In Progress" ? 1.0 : 0.0)
-                                    .padding(.top, 10)
-                                
-                                Divider()
-                                    .frame(height: 1)
-                                
-                                VStack(spacing: 5){
-                                    Text(monster.status == "In Progress" ? monster.name : (monster.status == "Coming Soon" ? "Coming Soon.." : "???"))
-                                        .fontWeight(monster.status == "In Progress" ? .bold : .regular)
-                                        .font(.subheadline)
+                            NavigationLink{
+                                JourneySheetDetailView(monster: monster )
+                            } label : {
+                                //card
+                                VStack(alignment: .center, spacing: 0) {
+                                    
+                                    //image monster
+                                    Image(monster.image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 150, height: 120)
+                                        .offset(y: 30)
+                                        .clipShape(.rect)
+                                        .grayscale(monster.status != "In Progress" ? 1.0 : 0.0)
                                         .padding(.top, 10)
                                     
-                                    Text(monster.status != "Coming Soon" ? monster.status : "")
-                                        .padding(2)
-                                        .padding(.horizontal, 4)
-                                        .font(.caption2)
-                                        .foregroundStyle(monster.status == "In Progress" || monster.status == "Completed" ? Color.green : Color.gray)
-                                        .background(
-                                            (monster.status == "In Progress" || monster.status == "Completed")
-                                            ? Color.green.opacity(0.1)
-                                            : (monster.status == "Coming Soon" ? Color.clear : Color.gray.opacity(0.1)))
-                                        .cornerRadius(4)
+                                    Divider()
+                                        .frame(height: 1)
                                     
+                                    VStack(spacing: 5){
+                                        Text(monster.status == "In Progress" ? monster.name : (monster.status == "Coming Soon" ? "Coming Soon.." : "???"))
+                                            .fontWeight(monster.status == "In Progress" ? .bold : .regular)
+                                            .font(.subheadline)
+                                            .padding(.top, 10)
+                                        
+                                        Text(monster.status != "Coming Soon" ? monster.status : "")
+                                            .padding(2)
+                                            .padding(.horizontal, 4)
+                                            .font(.caption2)
+                                            .foregroundStyle(monster.status == "In Progress" || monster.status == "Completed" ? Color.green : Color.gray)
+                                            .background(
+                                                (monster.status == "In Progress" || monster.status == "Completed")
+                                                ? Color.green.opacity(0.1)
+                                                : (monster.status == "Coming Soon" ? Color.clear : Color.gray.opacity(0.1)))
+                                            .cornerRadius(4)
+                                        
+                                        
+                                    }
+                                    .padding(.bottom, 10)
                                     
                                 }
-                                .padding(.bottom, 10)
+                                .frame(maxWidth: .infinity)
+                                .padding(5)
+                                .background(monster.status == "In Progress" || monster.status == "Completed" ? Color.white : Color.gray.opacity(0.1))
+                                .cornerRadius(12)
+                                .overlay(
+                                    
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                                )
+                                .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                                 
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(5)
-                            .background(monster.status == "In Progress" || monster.status == "Completed" ? Color.white : Color.gray.opacity(0.1))
-                            .cornerRadius(12)
-                            .overlay(
-                                
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                            )
-                            .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
-                            //                    .background(.red)
+                            .disabled(monster.status == "Locked" || monster.status == "Coming Soon")
+                            .buttonStyle(.plain)
                         }
+                        .padding(.horizontal,30)
+                        
+                        
                     }
-                    .padding(.horizontal,30)
                     
-                    
+                    Spacer()
                 }
-                
-                Spacer()
             }
             .scrollDisabled(true)
-
         }
-
     }
 }
 
