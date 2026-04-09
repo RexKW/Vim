@@ -17,9 +17,9 @@ class Monster{
     var image: String
     var deadImage: String
     
-    init(name: String,  hp: Int, image:String, deadImage:String) {
+    init(name: String,  hp: Int, image:String, deadImage:String, status:String) {
         self.name = name
-        self.status = "In Progress"
+        self.status = status
         self.hp = hp
         self.image = image
         self.deadImage = deadImage
