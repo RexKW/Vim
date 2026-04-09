@@ -193,7 +193,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
         // End the session properly
         session.end()
         
-        progressMonster!.sessions.append(Session(name: "Session \(progressMonster!.sessions.count)", timeStamp: Date.now, duration: Int(self.metrics.elapsedTime), caloriesBurned: Int(self.metrics.totalCalories)))
+        progressMonster!.sessions.append(Session(name: "Session \(progressMonster!.sessions.count + 1)", timeStamp: Date.now, duration: Int(self.metrics.elapsedTime), caloriesBurned: Double(self.metrics.totalCalories)))
         
         Task {
             do {

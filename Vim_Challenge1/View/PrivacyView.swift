@@ -11,6 +11,7 @@ struct PrivacyView: View {
     @Binding var isFinished: Bool
     @State private var isPresentedContinue: Bool = false
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var workoutVM: WorkoutViewModel
     
     var body: some View {
         VStack {
@@ -34,6 +35,7 @@ struct PrivacyView: View {
             }
             VStack {
                 Button(action: {
+                    workoutVM.setupHealthKit()
                     isPresentedContinue = true
                 }) {
                     Text("Continue")
@@ -60,13 +62,14 @@ struct PrivacyView: View {
         .padding(.horizontal, 40)
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $isPresentedContinue) {
-            CalorieTargetView()
+            CalorieTargetView(isFinished: $isFinished)
         }
     }
 }
 
 #Preview {
     PrivacyView(isFinished: .constant(false))
+        .environmentObject(WorkoutViewModel())
 }
 
 func privacyInfo(icon: String, desc: String, height: Int) -> some View {

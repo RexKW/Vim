@@ -13,9 +13,9 @@ class Session{
     var name: String
     var timeStamp: Date
     var duration: Int
-    var caloriesBurned: Int
+    var caloriesBurned: Double
     
-    init(name: String, timeStamp: Date, duration: Int, caloriesBurned: Int) {
+    init(name: String, timeStamp: Date, duration: Int, caloriesBurned: Double) {
         self.name = name
         self.timeStamp = timeStamp
         self.duration = duration

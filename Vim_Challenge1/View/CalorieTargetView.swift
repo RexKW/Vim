@@ -6,6 +6,7 @@ struct CalorieTargetView: View {
     @State private var select_index = 0
     @State private var value: Int = 500
     @State private var shouldNavigate = false
+    @Binding var isFinished: Bool
     
     // Pindahkan logika perhitungan steps ke luar body agar bersih dan tidak error
     private var steps: Int {
@@ -71,6 +72,7 @@ struct CalorieTargetView: View {
                 
                 Button(action: {
                     saveInitialHP()
+                    isFinished = true
                     shouldNavigate = true
                     
                 }) {
@@ -157,6 +159,6 @@ struct CalorieTargetView: View {
     }
 }
 #Preview {
-    CalorieTargetView()
+    CalorieTargetView(isFinished: .constant(false))
 }
 

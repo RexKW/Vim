@@ -13,6 +13,7 @@ struct MonsterView: View {
     @EnvironmentObject var workoutVM: WorkoutViewModel
     @State private var isWorkout: Bool = false
     @State private var isJourney: Bool = false
+    @State private var isFloating = false
     @State private var selectedDetent: PresentationDetent = .height(300)
     
     @Environment(\.modelContext) private var modelContext
@@ -37,11 +38,21 @@ struct MonsterView: View {
             NavigationStack(){
                 ZStack{
                     //monster including background
-                    Image(workoutVM.progressMonster?.image ?? "Unknow Image").resizable().frame(width: 300, height: 300)
+                    Image("Backdrop").resizable().edgesIgnoringSafeArea(.all)
+                    Image(workoutVM.progressMonster?.image ?? "Unknow Image").resizable().frame(width: 300, height: 400).offset(x: 0, y: isFloating ? 0 : 40)
+//                        .animation(
+//                            .easeInOut(duration: 1.5).repeatForever(autoreverses: true),
+//                            value: isFloating
+//                        )
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                                    isFloating = true
+                                }
+                        }
                     VStack{
                         VStack{
                             //monster name
-                            Text(workoutVM.progressMonster?.name ?? "Unknown Monster" ).fontWeight(.heavy).padding(.bottom,-5)
+                            Text(workoutVM.progressMonster?.name ?? "Unknown Monster" ).fontWeight(.heavy).padding(.bottom,-5).foregroundStyle(.white)
                             HealthBar(value: workoutVM.progressMonster?.currentHp ?? 0, maxValue: workoutVM.progressMonster?.hp ?? 0)
                                 .onAppear{
                                     print(workoutVM.progressMonster?.currentHp ?? 0)
@@ -64,8 +75,9 @@ struct MonsterView: View {
                     ToolbarItem(placement: .topBarLeading){
                         //session section
                         VStack{
-                            Text("Session \((workoutVM.progressMonster?.sessions.count) ?? 1)")
-                            Text("1 Apr")
+                            Text("Session \(((workoutVM.progressMonster?.sessions.count ?? 0) + 1))").foregroundStyle(.white).fontWeight(.bold)
+      
+                            Text(Date.now.formatted(date: .abbreviated, time: .omitted)).foregroundColor(.white)
                         }.fixedSize()
                     }.sharedBackgroundVisibility(.hidden)
                     //journey button
@@ -96,8 +108,9 @@ struct MonsterView: View {
         .onAppear {
             workoutVM.modelContext = modelContext
             workoutVM.setMonster(monsters)
-            workoutVM.setupHealthKit()
+//            workoutVM.setupHealthKit()
         }
+        .navigationBarBackButtonHidden(true)
         
     }
 }

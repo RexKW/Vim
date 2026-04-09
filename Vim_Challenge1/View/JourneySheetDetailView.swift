@@ -41,16 +41,16 @@ struct JourneySheetDetailView: View {
     let monster: Monster
     
     //dummy
-    var sessions: [Session] = [
-        Session(name: "Session 1", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 1))!, duration: 310, caloriesBurned: 50),
-        Session(name: "Session 2", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 1))!, duration: 383, caloriesBurned: 60),
-        Session(name: "Session 3", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 2))!, duration: 534, caloriesBurned: 72),
-        Session(name: "Session 4", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 3))!, duration: 920, caloriesBurned: 80),
-        Session(name: "Session 5", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 4))!, duration: 1021, caloriesBurned: 110),
-    ]
+//    var sessions: [Session] = [
+//        Session(name: "Session 1", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 1))!, duration: 310, caloriesBurned: 50),
+//        Session(name: "Session 2", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 1))!, duration: 383, caloriesBurned: 60),
+//        Session(name: "Session 3", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 2))!, duration: 534, caloriesBurned: 72),
+//        Session(name: "Session 4", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 3))!, duration: 920, caloriesBurned: 80),
+//        Session(name: "Session 5", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 4))!, duration: 1021, caloriesBurned: 110),
+//    ]
     
-    var totalCalories: Int {
-        sessions.reduce(0) { $0 + $1.caloriesBurned }
+    var totalCalories: Double {
+        monster.sessions.reduce(0) { $0 + $1.caloriesBurned }
     }
 
     var progressText: String {
@@ -93,7 +93,7 @@ struct JourneySheetDetailView: View {
                 Text("Total Calories Burned:")
                     .font(.title2)
                 
-                Text("\(totalCalories)")
+                Text("\(String(format: "%.2f",totalCalories))")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom,16)
@@ -101,7 +101,7 @@ struct JourneySheetDetailView: View {
                 
                 //session list
                 List {
-                    ForEach(sessions) { session in
+                    ForEach(monster.sessions) { session in
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(session.name).font(.headline)
@@ -114,7 +114,7 @@ struct JourneySheetDetailView: View {
                             VStack(alignment: .trailing){
                                 
                                 HStack(spacing: 5){
-                                    Text("\(session.caloriesBurned)")
+                                    Text("\(String(format: "%.2f",session.caloriesBurned))")
                                         .fontWeight(.bold)
                                     Text("kcal Burned")
                                         .font(.subheadline)
