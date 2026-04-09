@@ -8,17 +8,14 @@
 import SwiftUI
 
 struct SplashScreenView: View {
+    @Binding var isFinished: Bool
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Image("vimLogo")
                     .resizable()
                     .frame(width: 150, height: 150)
-                ///Ini nanti diganti icon
-                // RoundedRectangle(cornerRadius: 25, style: .continuous)
-                // .fill(.darkBlue)
-                // .frame(width: 150, height: 150)
-                // .padding(10)
                 Text("Welcome to")
                     .font(.system(size: 34, weight: .bold))
                     .multilineTextAlignment(.center)
@@ -33,9 +30,6 @@ struct SplashScreenView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     ///ganti icon
                     HStack {
-                        // Circle()
-                        // .fill(.darkBlue)
-                        // .frame(width: 60, height: 60)
                         Image(systemName: "target")
                             .resizable()
                             .frame(width: 40, height: 40)
@@ -54,9 +48,6 @@ struct SplashScreenView: View {
                     .padding(.horizontal, 45)
                     ///ganti icon
                     HStack {
-                        // Circle()
-                        // .fill(.darkBlue)
-                        // .frame(width: 60, height: 60)
                         Image(systemName: "figure.run")
                             .resizable()
                             .frame(width: 40, height: 45)
@@ -75,9 +66,6 @@ struct SplashScreenView: View {
                     .padding(.horizontal, 45)
                     ///ganti icon
                     HStack {
-                        // Circle()
-                        // .fill(.darkBlue)
-                        // .frame(width: 60, height: 60)
                         Image(systemName: "trophy.fill")
                             .resizable()
                             .frame(width: 40, height: 40)
@@ -92,38 +80,34 @@ struct SplashScreenView: View {
                                 .font(.system(size: 10, weight: .regular))
                                 .padding(.horizontal, 10)
                         }
-                    
+                        
                     }
                     .padding(.horizontal, 45)
-
+                    
                 }
+                
+                Spacer()
+                
+                NavigationLink(destination: PrivacyView(isFinished: $isFinished)) {
+                    ZStack {
+                        Capsule()
+                            .foregroundColor(.darkBlue)
+                        Text("Get Started")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 45)
+                    .frame(height: 60)
+                }
+                .padding(.bottom, 45)
             }
             .padding(.top, 120)
-            Spacer()
-            
-            NavigationLink(value: "Continue") {
-                ZStack {
-                    Capsule()
-                        .foregroundColor(.darkBlue)
-                    Text("Get Started")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .foregroundColor(.white)
-                }
-                .padding(.horizontal, 45)
-                .frame(height: 60)
-            }
-            .padding(.bottom, 45)
-            .navigationDestination(for: String.self) {text in
-                PrivacyView()
-            }
-
         }
-        
     }
 }
 
 #Preview {
-    SplashScreenView()
+    SplashScreenView(isFinished: .constant(false))
 }

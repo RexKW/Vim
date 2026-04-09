@@ -20,6 +20,7 @@ struct CalorieTargetView: View {
     @State private var select_index = 0
     @State private var value: Int = 500
     @State private var shouldNavigate = false
+    @Binding var isFinished: Bool
 
     var current_monster: Monster?
     var body: some View {
@@ -107,6 +108,7 @@ struct CalorieTargetView: View {
                 Button(action: {
                     saveInitialHP()
                     shouldNavigate = true
+                    isFinished = true
                 }) {
                     Text("Set Target")
                         .font(.system(size: 18))
@@ -120,6 +122,7 @@ struct CalorieTargetView: View {
             .navigationDestination(isPresented: $shouldNavigate) {
                 MonsterView()
             }
+            .navigationBarBackButtonHidden()
         }
     }
     func buttonminmax(plusorminus: String) -> some View {
@@ -178,5 +181,5 @@ struct CalorieTargetView: View {
 }
 
 #Preview {
-    CalorieTargetView()
+    CalorieTargetView(isFinished: .constant(false))
 }
