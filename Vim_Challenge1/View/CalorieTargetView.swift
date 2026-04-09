@@ -1,17 +1,3 @@
-//
-//  CalorieTargetView.swift
-//  Vim_Challenge1
-//
-//  Created by Rex Kenny Wirasantoso on 07/04/26.
-//
-
-//
-//  JourneyDetailView.swift
-//  Vim_Challenge1
-//
-//  Created by Rex Kenny Wirasantoso on 07/04/26.
-//
-
 import SwiftData
 import SwiftUI
 
@@ -20,9 +6,12 @@ struct CalorieTargetView: View {
     @State private var select_index = 0
     @State private var value: Int = 500
     @State private var shouldNavigate = false
-    @Binding var isFinished: Bool
+    
+    // Pindahkan logika perhitungan steps ke luar body agar bersih dan tidak error
+    private var steps: Int {
+        Int(Double(value) / 0.04)
+    }
 
-    var current_monster: Monster?
     var body: some View {
         NavigationStack {
             VStack {
@@ -30,42 +19,28 @@ struct CalorieTargetView: View {
                     .font(.system(size: 22))
                     .bold()
                     .padding(.bottom, 9)
-
-                Text(
-                    """
-                    Everybody starts somewhere! Chose 
-                    the target caloriest that suits your ability 
-                    and daily routine
-                    """
-                )
-                .font(.system(size: 17))
-                .padding(.bottom, 41)
-                .multilineTextAlignment(.center)
-
+                
+                Text("Everybody starts somewhere! Chose \nthe target caloriest that suits your ability \nand daily routine")
+                    .font(.system(size: 17))
+                    .padding(.bottom, 41)
+                    .multilineTextAlignment(.center)
+                
                 Picker("Difficulty", selection: $select_index) {
                     Text("Easy").tag(0)
                     Text("Medium").tag(1)
                     Text("Hard").tag(2)
                 }
-                .onChange(of: value) { _, newValue in
-                    valueswitchautomatic(value: Int(newValue))
-                }
-                .onChange(of: select_index) { oldValue, newValue in
-                    switch newValue {
-                    case 0:
-                        if value >= 750 { value = 500 }
-                    case 1:
-                        if value < 750 || value >= 1000 { value = 750 }
-                    case 2:
-                        if value < 1000 { value = 1000 }
-                    default:
-                        break
-                    }
-                }
                 .pickerStyle(SegmentedPickerStyle())
                 .frame(maxWidth: 250)
                 .padding(.bottom, 20)
                 .scaleEffect(1.2)
+                .onChange(of: value) { _, newValue in
+                    valueswitchautomatic(value: Int(newValue))
+                }
+                .onChange(of: select_index) { _, newValue in
+                    updateValueFromPicker(newValue)
+                }
+
                 HStack {
                     buttonminmax(plusorminus: "minus")
                     VStack(spacing: 2) {
@@ -79,32 +54,21 @@ struct CalorieTargetView: View {
                 }
                 .frame(maxWidth: 270)
                 .padding(.bottom, 40)
-
-                var steps: Int {
-                    Int(Double(value) / 0.04)
+                
+                // Gunakan variabel 'steps' yang sudah didefinisikan di atas
+                VStack(alignment: .leading) {
+                    Text("This is equivalent to :")
+                    Text("- **\(steps) steps** on the run.")
+                    Text("- **\(steps / 2) stairs steps.**")
                 }
-
-                Text(
-                    """
-                    This is equivalent to :
-                    - \(Text("\(steps) steps").bold()) on the run.
-                    - \(Text("\(steps / 2) stairs steps.").bold())
-                    """
-                )
-                .padding(.bottom, 150)
-
-                Text(
-                    """
-                    The target calorie can be completed
-                    anytime, but \(Text("2 weeks of inactivity").bold())
-                    will result in a \(Text("reset").bold())
-                    """
-                )
-                .font(.system(size: 12))
-                .foregroundColor(Color("Color_CalorieTargetView_Text"))
-                .multilineTextAlignment(.center)
-                .padding(.bottom, 18)
-
+                .padding(.bottom, 100)
+                
+                Text("The target calorie can be completed anytime, but **2 weeks of inactivity** will result in a **reset**")
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 18)
+                
                 Button(action: {
                     saveInitialHP()
                     shouldNavigate = true
@@ -125,16 +89,13 @@ struct CalorieTargetView: View {
             .navigationBarBackButtonHidden()
         }
     }
+
+    // Fungsi pembantu untuk tombol plus minus
     func buttonminmax(plusorminus: String) -> some View {
         Button {
             if plusorminus == "minus" {
-                if value > 450 {
-                    value -= 10
-                } else if value <= 450 {
-                    value = 450
-
-                }
-            } else if plusorminus == "plus" {
+                if value > 450 { value -= 10 }
+            } else {
                 value += 10
             }
         } label: {
@@ -142,54 +103,60 @@ struct CalorieTargetView: View {
                 .fill(Color.gray.opacity(0.2))
                 .frame(width: 46, height: 42)
                 .overlay(
-                    Image(systemName: plusorminus)
+                    Image(systemName: plusorminus == "plus" ? "plus" : "minus")
                         .font(.title2)
                         .foregroundStyle(.black)
                 )
         }
     }
 
-    func valueswitchautomatic(value: Int) {
-        let targetIndex: Int
-
-        if value < 750 {
-            targetIndex = 0
-        } else if value < 1000 {
-            targetIndex = 1
-        } else {
-            targetIndex = 2
+    // Memperbaiki logika switch agar tidak berulang-ulang
+    func updateValueFromPicker(_ index: Int) {
+        switch index {
+        case 0: if value >= 750 { value = 500 }
+        case 1: if value < 750 || value >= 1000 { value = 750 }
+        case 2: if value < 1000 { value = 1000 }
+        default: break
         }
+    }
 
+    func valueswitchautomatic(value: Int) {
+        let targetIndex = value < 750 ? 0 : (value < 1000 ? 1 : 2)
         if select_index != targetIndex {
             select_index = targetIndex
         }
     }
 
     func saveInitialHP() {
-        // rex :nambah if else jika monster pertama sudah dikalahkan next ke mosnter selanjutnya
-        if let monster = current_monster {
-            monster.hp = Double(value)
-            print("Masuk?")
-        } else {
+        let monsterque = [
+            (name: "Rex Mohawk", image: "Rex"),
+            (name: "AdamDevil", image: "AdamDevil"),
+            (name: "Jojomblo", image: "Jojomblo"),
+            (name: "Unknown", image: "UnknownMonster")
+        ]
+        
+        let descriptor = FetchDescriptor<Monster>()
+        let allmonster = (try? modelContext.fetch(descriptor)) ?? []
+        let currentActive = allmonster.first { $0.status == "In Progress" }
+        let countDone = allmonster.filter { $0.status == "Done" }.count
+        
+        if let monster = currentActive {
+            monster.hp = value
+        } else if countDone < monsterque.count {
+            let nextData = monsterque[countDone]
             let newmonster = Monster(
-                name: "Rex Mohawk", hp: Double(value), image: "Rex", deadImage: "", status: "In Progress"
+                name: nextData.name,
+                hp: value,
+                image: nextData.image,
+                deadImage: "",
+                status: "In Progress"
             )
             modelContext.insert(newmonster)
-            do{
-                try modelContext.save()
-                print("ok")
-            }catch{
-                print("anjay")
-            }
+            try? modelContext.save()
         }
     }
 }
-
 #Preview {
     CalorieTargetView(isFinished: .constant(false))
 }
 
-//Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
-//Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
-//Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
-//Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
