@@ -64,7 +64,7 @@ struct MonsterView: View {
                     ToolbarItem(placement: .topBarLeading){
                         //session section
                         VStack{
-                            Text("Session 1")
+                            Text("Session \((workoutVM.progressMonster?.sessions.count) ?? 1)")
                             Text("1 Apr")
                         }.fixedSize()
                     }.sharedBackgroundVisibility(.hidden)
@@ -115,16 +115,16 @@ func HealthBar(value: Double, maxValue: Double) -> some View {
             ZStack(alignment: .leading){
                 ZStack(alignment:.center){
                     Rectangle()
-                        .frame(width: totalBarWidth, height: 30)
+                        .frame(width: 245, height: 30)
                         .cornerRadius(50)
                         .foregroundColor(.white)
-                    Text("\(value) Kcal").foregroundColor(Color.red).fontWeight(Font.Weight.black).padding(.leading, 20)
+                    Text("\(Int(value)) Kcal").foregroundColor(Color.red).fontWeight(Font.Weight.black).padding(.leading, 20)
                 }
 
                 ZStack(alignment:.center){
                     
                     //This is the green Healthbar to show shrinking
-                    Text("\(value) Kcal" ).foregroundColor(Color.white).fontWeight(Font.Weight.black).padding(.leading, 20).frame(width: 245, height: 30).background(Color.green).mask(
+                    Text("\(Int(value)) Kcal" ).foregroundColor(Color.white).fontWeight(Font.Weight.black).padding(.leading, 20).frame(width: 245, height: 30).background(Color.green).mask(
                         HStack {
                             Rectangle()
                                 .frame(width: CGFloat(value) / CGFloat(maxValue) * 245) //Edit the size here to shrink
@@ -133,24 +133,21 @@ func HealthBar(value: Double, maxValue: Double) -> some View {
                     )
                 }.clipShape(Rectangle()).frame(width: 245)
                 
-                // Bar Hijau dengan Masking
-                ZStack {
-                    Text("\(latesthp)").foregroundColor(.white).fontWeight(.black).font(.system(size: 12))
-                        .frame(width: totalBarWidth, height: 30)
-                        .background(Color.green)
-                        .mask(
-                            HStack(spacing: 0) {
-                                Rectangle().frame(width: dynamicWidth)
-                                Spacer(minLength: 0)
-                            }
-                        )
-                }
+            
             }
             .clipShape(Capsule())
-            .padding(.leading, 5) // Memberikan jarak agar tidak tertutup hati
+            Rectangle()
+                            .frame(width: 60, height: 40)
+                            .foregroundColor(Color.red)
+                            .cornerRadius(50)
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(Color.white)
+                            .frame(width: 60, height: 50)
+                            .cornerRadius(14)
         }
     }
-    .animation(.interactiveSpring(), value: dynamicWidth)
+    .animation(.interactiveSpring(), value: CGFloat(value) / CGFloat(maxValue) * 245)
 }
 
 #Preview {

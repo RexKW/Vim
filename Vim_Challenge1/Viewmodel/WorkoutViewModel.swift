@@ -17,6 +17,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     @Published var metrics = WorkoutMetrics()
     @Published var progressMonster: Monster?
     
+    private var calorieDamageBucket: Double = 0
     private var lastCalories: Double = 0
     var modelContext: ModelContext?
     
@@ -174,6 +175,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
         }
         self.metrics.totalCalories -= totalPausedCalories
         totalPausedCalories = 0
+        self.calorieDamageBucket = 0
         startElapsedTimeTimer()
         print("Workout resumed")
     }
@@ -191,11 +193,14 @@ class WorkoutViewModel: NSObject ,ObservableObject {
         // End the session properly
         session.end()
         
+        progressMonster!.sessions.append(Session(name: "Session \(progressMonster!.sessions.count)", timeStamp: Date.now, duration: Int(self.metrics.elapsedTime), caloriesBurned: Int(self.metrics.totalCalories)))
+        
         Task {
             do {
                 // Finish collecting data
                 try await builder.endCollection(at: Date())
                 _ = try await builder.finishWorkout()
+                
                 print("Workout saved to HealthKit")
             } catch {
                 print("Failed to finish workout: \(error.localizedDescription)")
@@ -207,6 +212,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
                 self.workoutBuilder = nil
                 self.totalPausedTime = 0
                 self.totalPausedCalories = 0
+                self.calorieDamageBucket = 0
                 self.currentState = .idle
                 self.metrics.reset()
             }
@@ -226,28 +232,43 @@ class WorkoutViewModel: NSObject ,ObservableObject {
                 // 3.
             case HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned):
                 if let caloriesValue = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) {
+                    
+                    // Ignore downward recalibrations
+                    guard caloriesValue > self.lastCalories else { return }
+
                     let rawDelta = caloriesValue - self.lastCalories
                     self.lastCalories = caloriesValue
-
-                    // Prevent negative or crazy spikes
-                    let delta = max(0, min(rawDelta, 5)) // max 5 kcal per update (tweak this)
 
                     if self.currentState != .paused {
                         self.metrics.totalCalories = caloriesValue
                         
-                        if let monster = self.progressMonster {
-                            let damage = Double(max(0, delta * 5))
-                            print("Damage:", damage) // 👈 debug
-                            monster.currentHp = max(0, monster.currentHp - damage)
-                            do {
+                        // 1. Add the tiny trickle of calories to our bucket
+                        self.calorieDamageBucket += rawDelta
+                        
+                        // 2. Set your attack threshold (e.g., 1 full kcal = 1 attack)
+                        let caloriesPerAttack = 1.0 // 👈 Tweak this! Higher = less frequent, bigger attacks
+                        
+                        // 3. Only deal damage when the bucket is full
+                        if self.calorieDamageBucket >= caloriesPerAttack {
+                            if let monster = self.progressMonster {
+                                
+                                // Deal chunk damage (1 kcal * 5 damage = 5 total damage per strike)
+                                let damage = Double(caloriesPerAttack * 5.0)
+                                print("💥 BOOM! Monster took \(damage) damage!")
+                                
+                                monster.currentHp = max(0, monster.currentHp - damage)
+                                
+                                do {
                                     try self.modelContext?.save()
                                 } catch {
                                     print("Save failed:", error)
                                 }
-                            self.objectWillChange.send()
+                                self.objectWillChange.send()
+                                
+                                // 4. Empty the bucket (but keep the remainder for the next attack)
+                                self.calorieDamageBucket -= caloriesPerAttack
+                            }
                         }
-                    } else {
-                        self.totalPausedCalories += delta
                     }
                 }
                 

@@ -72,7 +72,7 @@ struct CalorieTargetView: View {
                 Button(action: {
                     saveInitialHP()
                     shouldNavigate = true
-                    isFinished = true
+                    
                 }) {
                     Text("Set Target")
                         .font(.system(size: 18))
@@ -141,12 +141,12 @@ struct CalorieTargetView: View {
         let countDone = allmonster.filter { $0.status == "Done" }.count
         
         if let monster = currentActive {
-            monster.hp = value
+            monster.hp = Double(value)
         } else if countDone < monsterque.count {
             let nextData = monsterque[countDone]
             let newmonster = Monster(
                 name: nextData.name,
-                hp: value,
+                hp: Double(value),
                 image: nextData.image,
                 deadImage: "",
                 status: "In Progress"
@@ -157,6 +157,6 @@ struct CalorieTargetView: View {
     }
 }
 #Preview {
-    CalorieTargetView(isFinished: .constant(false))
+    CalorieTargetView()
 }
 

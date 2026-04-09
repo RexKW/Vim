@@ -60,7 +60,7 @@ struct PrivacyView: View {
         .padding(.horizontal, 40)
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $isPresentedContinue) {
-            CalorieTargetView(isFinished: $isFinished)
+            CalorieTargetView()
         }
     }
 }
