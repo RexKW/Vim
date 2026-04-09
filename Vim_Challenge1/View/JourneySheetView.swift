@@ -8,20 +8,13 @@
 import SwiftUI
 
 struct JourneyView: View {
+    @Binding var isJourney: Bool
     
-    //status ada apa aja?
-//    let dummyMonsters = [
-//        Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
-//        Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
-//        Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
-//        Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon"),
-//        
-//    ]
     let monster: [Monster]
     
     let journeyColumns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
     ]
     
     var body: some View {
@@ -40,16 +33,19 @@ struct JourneyView: View {
                         ForEach(monster, id: \.self) { monster in
                             
                             NavigationLink{
-                                JourneySheetDetailView(monster: monster)
+                                JourneySheetDetailView(isJourney: $isJourney, monster: monster)
                             }
                             label : {
-                                
+                                MonsterCardView(monster: monster)
                             }
+                            .buttonStyle(.plain)
+                            .disabled(monster.status == "Locked" || monster.status == "Coming Soon")
+                            
                         }
-                        .padding(.horizontal,30)
-                        
                         
                     }
+                    .padding(.horizontal,16)
+
                     
                     Spacer()
                 }
@@ -57,6 +53,17 @@ struct JourneyView: View {
             .scrollDisabled(true)
             .navigationTitle("Journey")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isJourney = false
+                    } label: {
+                        HStack(spacing: 5) {
+                            Image(systemName: "xmark")
+                        }
+                    }
+                }
+            }
         }
         
     }
@@ -65,10 +72,11 @@ struct JourneyView: View {
 
 
 #Preview {
-    JourneyView(monster: [
-        Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
-        Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
-        Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
-        Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
-    ])
+    JourneyView(isJourney: .constant(true),
+                monster: [
+                    Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
+                    Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
+                    Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
+                    Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
+                ])
 }
