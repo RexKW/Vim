@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MonsterView: View {
     @State private var isWorkout: Bool = false
     @State private var isJourney: Bool = false
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \Monster.name) private var monsters :[Monster]
+    
     
     var body: some View {
         

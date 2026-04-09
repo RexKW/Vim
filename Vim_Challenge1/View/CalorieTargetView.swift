@@ -118,7 +118,7 @@ struct CalorieTargetView: View {
                 }
             }
             .navigationDestination(isPresented: $shouldNavigate) {
-                MonsterView()
+                MonsterListView()
             }
         }
     }
@@ -164,13 +164,21 @@ struct CalorieTargetView: View {
 
     func saveInitialHP() {
         // rex :nambah if else jika monster pertama sudah dikalahkan next ke mosnter selanjutnya
-        if let monster = current_monster {            monster.hp = value
+        if let monster = current_monster {
+            monster.hp = value
+            print("Masuk?")
         } else {
             let newmonster = Monster(
                 name: "rex",
                 hp: value
             )
             modelContext.insert(newmonster)
+            do{
+                try modelContext.save()
+                print("ok")
+            }catch{
+                print("anjay")
+            }
         }
     }
 }
