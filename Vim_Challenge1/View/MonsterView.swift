@@ -10,6 +10,8 @@ import SwiftUI
 struct MonsterView: View {
     @State private var isWorkout: Bool = false
     @State private var isJourney: Bool = false
+    @State private var showAlert: Bool = false
+    @State private var isInactive: Bool = false
     
     var body: some View {
         
@@ -68,7 +70,21 @@ struct MonsterView: View {
             }
             .background(.white)
         }
-        
+        // alert oh no when isInactive = true
+        .alert("😱 OH NOOOO!! 😱", isPresented: $showAlert){
+            Button("Return to Fight"){
+                isInactive = false
+            }
+            .keyboardShortcut(.defaultAction)
+            
+        } message: {
+            Text("2 weeks of inactivity has allowed the monster to fully heal. You must start moving again to deal damage!")
+        }
+        .onAppear(){
+            if isInactive{
+                showAlert = true;
+            }
+        }
     }
 }
 
@@ -90,7 +106,7 @@ func HealthBar(value: Int) -> some View {
                         .foregroundColor(.white)
                     Text("300 HP").foregroundColor(Color.red).fontWeight(Font.Weight.black)
                 }
-
+                
                 ZStack(alignment:.center){
                     
                     //This is the green Healthbar to show shrinking
@@ -104,7 +120,7 @@ func HealthBar(value: Int) -> some View {
                 }.clipShape(Rectangle()).frame(width: 245)
                 
             }.clipShape(Capsule())
-
+            
             //This is the leftside heart
             Rectangle()
                 .frame(width: 60, height: 40)
@@ -116,8 +132,8 @@ func HealthBar(value: Int) -> some View {
                 .frame(width: 60, height: 50)
                 .cornerRadius(14)
         }
-
-
+        
+        
     }
 }
 
