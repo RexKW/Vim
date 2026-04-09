@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MonsterView: View {
+    @EnvironmentObject var workoutVM: WorkoutViewModel
     @State private var isWorkout: Bool = false
     @State private var isJourney: Bool = false
     @State private var selectedDetent: PresentationDetent = .height(300)
@@ -19,7 +20,7 @@ struct MonsterView: View {
             NavigationStack(){
                 ZStack{
                     //monster including background
-                    Image("Monster").resizable().scaledToFit().frame(width: .infinity).padding(.bottom, -200)
+                    Image("Monster").resizable().scaledToFit().frame(maxWidth: .infinity).padding(.bottom, -200)
                     VStack{
                         VStack{
                             //monster name
@@ -58,9 +59,10 @@ struct MonsterView: View {
                     }
                 }
                 //sheet for workout
-            }.sheet(isPresented: $isWorkout, ){
+            }.sheet(isPresented: $isWorkout){
                 WorkoutSheetView( currentDetent: $selectedDetent)
-                    .presentationBackgroundInteraction(. enabled)
+                    .presentationBackgroundInteraction(.enabled)
+                    .interactiveDismissDisabled()
                     .presentationDetents(
                         [.height(200), .height(400)],
                         selection: $selectedDetent)
@@ -70,6 +72,9 @@ struct MonsterView: View {
                 JourneyView()
             }
             .background(.white)
+        }
+        .onAppear {
+            workoutVM.setupHealthKit()
         }
         
     }
@@ -126,5 +131,6 @@ func HealthBar(value: Int) -> some View {
 
 #Preview {
     MonsterView()
+        .environmentObject(WorkoutViewModel())
 }
 

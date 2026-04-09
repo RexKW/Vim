@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct WorkoutSheetView: View {
-    @State var calBurnedSheet: Bool = false
-    @State private var isPaused = false
+
     @Binding var currentDetent: PresentationDetent
     @EnvironmentObject var workoutVM: WorkoutViewModel
     @Environment(\.dismiss) var dismiss
@@ -21,13 +21,13 @@ struct WorkoutSheetView: View {
                     //all element in VStack will be left aligned
                     
                     //calorie burned
-                    Text("0 Kcal")
+                    Text(String(format: "%.1f Kcal", workoutVM.metrics.totalCalories))
                         .font(.system(size: 45))
                         .fontWeight(.bold)
                         .foregroundColor(.vibrantOrange)
                     
                     //stopwatch
-                    Text(workoutVM.formattedTime)
+                    Text(workoutVM.formattedTime(timeElapsed: workoutVM.metrics.elapsedTime))
                         .font(.largeTitle)
                         .fontWeight(.bold)
                 }
@@ -38,16 +38,14 @@ struct WorkoutSheetView: View {
                 
                 //play and pause button
                 Button(action: {
-                    isPaused.toggle()
-                    if isPaused{
-                        workoutVM.pauseTimer()
-                    }
-                    else {
-                        workoutVM.startTimer()
+                    if(workoutVM.currentState == .paused){
+                        workoutVM.resumeWorkout()
+                    }else{
+                        workoutVM.pauseWorkout()
                     }
                 }) {
                     //change symbol based on isPaused status
-                    Image(systemName: isPaused ? "play.fill" : "pause.fill")
+                    Image(systemName: workoutVM.currentState == .paused ? "play.fill" : "pause.fill")
                         .font(.system(size: 40))
                         .foregroundColor(Color.white)
                         .padding(30)
@@ -80,7 +78,7 @@ struct WorkoutSheetView: View {
                 //end session button in sheet
                 VStack (alignment: .center) {
                     Button("End Session", systemImage: "xmark"){
-                        workoutVM.resetTimer()
+                        workoutVM.endWorkout()
                         dismiss()
                     }
                     .frame(width: 300, height: 10)
@@ -95,8 +93,8 @@ struct WorkoutSheetView: View {
         }
         .padding(.top, 20)
         .animation(.spring(), value: currentDetent)
-        .onAppear() {
-            workoutVM.startTimer()
+        .task {
+            await workoutVM.startWorkout(activity: .running, location: .outdoor)
         }
     }
 }
