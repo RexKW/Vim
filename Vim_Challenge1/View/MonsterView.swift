@@ -28,8 +28,8 @@ struct MonsterView: View {
 //
 //    ]
     
-    private var proggresmonster : Monster?{
-        monsters.first(where: {$0.status != "Done"})
+    private var proggresmonster : Monster{
+        monsters.first(where: {$0.status != "Done"}) ?? Monster(name: "Rex Mohawk", hp: 500, image: "Rex", deadImage: "", status: "In Progress")
     }
     var body: some View {
         
@@ -38,14 +38,14 @@ struct MonsterView: View {
             NavigationStack(){
                 ZStack{
                     //monster including background
-                    Image(proggresmonster!.image).resizable().scaledToFit().frame(maxWidth: .infinity).padding(.bottom, -200)
+                    Image(proggresmonster.image).resizable().frame(width: 300, height: 300)
                     VStack{
                         VStack{
                             //monster name
-                            Text(proggresmonster!.name).fontWeight(.heavy).padding(.bottom,-5)
-                            HealthBar(value: proggresmonster!.hp)
+                            Text(proggresmonster.name ).fontWeight(.heavy).padding(.bottom,-5)
+                            HealthBar(value: proggresmonster.hp)
                                 .onAppear{
-                                    print(proggresmonster!.hp)
+                                    print(proggresmonster.hp)
                                 }
                         }
                         
@@ -154,3 +154,4 @@ func HealthBar(value: Int) -> some View {
     MonsterView()
         .environmentObject(WorkoutViewModel())
 }
+
