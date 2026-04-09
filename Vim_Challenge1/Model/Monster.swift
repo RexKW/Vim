@@ -12,15 +12,17 @@ import SwiftData
 class Monster{
     var name: String
     var status: String
-    var hp: Int
+    var hp: Double
+    var currentHp: Double
     var sessions: [Session]
     var image: String
     var deadImage: String
     
-    init(name: String,  hp: Int, image:String, deadImage:String, status:String) {
+    init(name: String,  hp: Double, image:String, deadImage:String, status:String) {
         self.name = name
         self.status = status
         self.hp = hp
+        self.currentHp = hp
         self.image = image
         self.deadImage = deadImage
         self.sessions = []

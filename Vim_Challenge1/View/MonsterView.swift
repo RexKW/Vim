@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import SwiftData
+import _SwiftData_SwiftUI
 
 struct MonsterView: View {
     @EnvironmentObject var workoutVM: WorkoutViewModel
@@ -16,8 +16,8 @@ struct MonsterView: View {
     @State private var selectedDetent: PresentationDetent = .height(300)
     
     @Environment(\.modelContext) private var modelContext
-    @Query private var monsters : [Monster]
-    //@Query(sort: \Monster.name) private var monsters :[Monster]
+
+    @Query(sort: \Monster.name) private var monsters :[Monster]
     //predict berdasarkan status first jika done maka next
     
 //    let monster: [Monster] = [
@@ -28,9 +28,6 @@ struct MonsterView: View {
 //
 //    ]
     
-    private var proggresmonster : Monster{
-        monsters.first(where: {$0.status != "Done"}) ?? Monster(name: "Rex Mohawk", hp: 500, image: "Rex", deadImage: "", status: "In Progress")
-    }
     var body: some View {
         
         
@@ -38,14 +35,14 @@ struct MonsterView: View {
             NavigationStack(){
                 ZStack{
                     //monster including background
-                    Image(proggresmonster.image).resizable().frame(width: 300, height: 300)
+                    Image(workoutVM.progressMonster?.image ?? "Unknow Image").resizable().frame(width: 300, height: 300)
                     VStack{
                         VStack{
                             //monster name
-                            Text(proggresmonster.name ).fontWeight(.heavy).padding(.bottom,-5)
-                            HealthBar(value: proggresmonster.hp)
+                            Text(workoutVM.progressMonster?.name ?? "Unknown Monster" ).fontWeight(.heavy).padding(.bottom,-5)
+                            HealthBar(value: workoutVM.progressMonster?.currentHp ?? 0, maxValue: workoutVM.progressMonster?.hp ?? 0)
                                 .onAppear{
-                                    print(proggresmonster.hp)
+                                    print(workoutVM.progressMonster?.currentHp ?? 0)
                                 }
                         }
                         
@@ -95,13 +92,15 @@ struct MonsterView: View {
             .background(.white)
         }
         .onAppear {
+            workoutVM.modelContext = modelContext
+            workoutVM.setMonster(monsters)
             workoutVM.setupHealthKit()
         }
         
     }
 }
 
-func HealthBar(value: Int) -> some View {
+func HealthBar(value: Double, maxValue: Double) -> some View {
     ZStack{
         ZStack(alignment: .leading){
             //This is just for the red border
@@ -117,16 +116,16 @@ func HealthBar(value: Int) -> some View {
                         .frame(width: 245, height: 30)
                         .cornerRadius(50)
                         .foregroundColor(.white)
-                    Text(String(value)).foregroundColor(Color.red).fontWeight(Font.Weight.black)
+                    Text("\(value) Kcal").foregroundColor(Color.red).fontWeight(Font.Weight.black).padding(.leading, 20)
                 }
 
                 ZStack(alignment:.center){
                     
                     //This is the green Healthbar to show shrinking
-                    Text(String(value)).foregroundColor(Color.white).fontWeight(Font.Weight.black).frame(width: 245, height: 30).background(Color.green).mask(
+                    Text("\(value) Kcal" ).foregroundColor(Color.white).fontWeight(Font.Weight.black).padding(.leading, 20).frame(width: 245, height: 30).background(Color.green).mask(
                         HStack {
                             Rectangle()
-                                .frame(width:120) //Edit the size here to shrink
+                                .frame(width: CGFloat(value) / CGFloat(maxValue) * 245) //Edit the size here to shrink
                             Spacer(minLength: 0)
                         }
                     )

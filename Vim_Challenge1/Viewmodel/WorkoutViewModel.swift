@@ -8,14 +8,26 @@
 import Foundation
 import Combine
 import HealthKit
+import _SwiftData_SwiftUI
 
 class WorkoutViewModel: NSObject ,ObservableObject {
     @Published var timeElapsed: Double = 0
     @Published var isTimerRunning: Bool = false
     @Published var currentState: WorkoutState = .idle
     @Published var metrics = WorkoutMetrics()
+    @Published var progressMonster: Monster?
+    
+    private var lastCalories: Double = 0
+    var modelContext: ModelContext?
+    
+    
+    func setMonster(_ monsters: [Monster]) {
+        self.progressMonster = monsters.first(where: { $0.status != "Done" })
+    }
+    
     private var pauseStartDate: Date?
     private var totalPausedTime: TimeInterval = 0
+    private var totalPausedCalories: Double = 0
     
     private let healthStore = HKHealthStore()
     
@@ -74,9 +86,9 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     @MainActor
     func startWorkout(activity: HKWorkoutActivityType = .running, location: HKWorkoutSessionLocationType = .outdoor) async {
         guard workoutSession == nil, currentState == .idle else {
-                print("Workout already in progress or starting")
-                return
-            }
+            print("Workout already in progress or starting")
+            return
+        }
         // 1.
         metrics.reset()
         currentState = .preparing
@@ -126,7 +138,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
         }
     }
     
-
+    
     // 3.
     private func startElapsedTimeTimer() {
         elapsedTimeTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] _ in
@@ -157,8 +169,11 @@ class WorkoutViewModel: NSObject ,ObservableObject {
         currentState = .active
         if let pauseStartDate{
             totalPausedTime += Date().timeIntervalSince(pauseStartDate)
+            
             self.pauseStartDate = nil
         }
+        self.metrics.totalCalories -= totalPausedCalories
+        totalPausedCalories = 0
         startElapsedTimeTimer()
         print("Workout resumed")
     }
@@ -166,10 +181,10 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     // 3.
     func endWorkout() {
         guard let session = workoutSession, let builder = workoutBuilder else { return }
-
+        
         // Stop activity timer
         stopElapsedTimeTimer()
-
+        
         // Stop the session
         session.stopActivity(with: Date())
         
@@ -190,7 +205,9 @@ class WorkoutViewModel: NSObject ,ObservableObject {
             await MainActor.run {
                 self.workoutSession = nil
                 self.workoutBuilder = nil
-                self.currentState = .finished
+                self.totalPausedTime = 0
+                self.totalPausedCalories = 0
+                self.currentState = .idle
                 self.metrics.reset()
             }
         }
@@ -209,7 +226,29 @@ class WorkoutViewModel: NSObject ,ObservableObject {
                 // 3.
             case HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned):
                 if let caloriesValue = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) {
-                    self.metrics.totalCalories = caloriesValue
+                    let rawDelta = caloriesValue - self.lastCalories
+                    self.lastCalories = caloriesValue
+
+                    // Prevent negative or crazy spikes
+                    let delta = max(0, min(rawDelta, 5)) // max 5 kcal per update (tweak this)
+
+                    if self.currentState != .paused {
+                        self.metrics.totalCalories = caloriesValue
+                        
+                        if let monster = self.progressMonster {
+                            let damage = Double(max(0, delta * 5))
+                            print("Damage:", damage) // 👈 debug
+                            monster.currentHp = max(0, monster.currentHp - damage)
+                            do {
+                                    try self.modelContext?.save()
+                                } catch {
+                                    print("Save failed:", error)
+                                }
+                            self.objectWillChange.send()
+                        }
+                    } else {
+                        self.totalPausedCalories += delta
+                    }
                 }
                 
                 // 4.
@@ -225,25 +264,26 @@ class WorkoutViewModel: NSObject ,ObservableObject {
         
     }
     
-//    /// This is for starting the timer when the workout sheet appear
-//    func startTimer(){
-//        guard !isTimerRunning else { return }
-//        isTimerRunning = true
-//        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in self.timeElapsed += 0.01}
-//    }
-//    
-
-//    
-//    /// This is for pausing the timer
-//    func pauseTimer(){
-//        timer?.invalidate()
-//        timer = nil
-//        isTimerRunning = false
-//    }
-//    
-//    /// This is for reseting the timer
-//    func resetTimer(){
-//        pauseTimer()
-//        timeElapsed = 0
-//    }
+    //    /// This is for starting the timer when the workout sheet appear
+    //    func startTimer(){
+    //        guard !isTimerRunning else { return }
+    //        isTimerRunning = true
+    //        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in self.timeElapsed += 0.01}
+    //    }
+    //
+    
+    //
+    //    /// This is for pausing the timer
+    //    func pauseTimer(){
+    //        timer?.invalidate()
+    //        timer = nil
+    //        isTimerRunning = false
+    //    }
+    //
+    //    /// This is for reseting the timer
+    //    func resetTimer(){
+    //        pauseTimer()
+    //        timeElapsed = 0
+    //    }
 }
+

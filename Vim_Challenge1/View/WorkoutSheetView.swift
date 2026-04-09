@@ -78,8 +78,11 @@ struct WorkoutSheetView: View {
                 //end session button in sheet
                 VStack (alignment: .center) {
                     Button("End Session", systemImage: "xmark"){
-                        workoutVM.endWorkout()
-                        dismiss()
+                        Task {
+                            workoutVM.endWorkout()
+                            dismiss()
+                        }
+                        
                     }
                     .frame(width: 300, height: 10)
                     .foregroundColor(Color.white)

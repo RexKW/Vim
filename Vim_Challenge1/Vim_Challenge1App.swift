@@ -16,9 +16,7 @@ struct Vim_Challenge1App: App {
         WindowGroup {
             ContentView()
                 .environmentObject(workoutViewModel)
-                .modelContainer(for: [Monster.self])
-                .modelContainer(for: User.self)
-                .modelContainer(for: Session.self)
+                .modelContainer(for: [Monster.self, User.self, Session.self])
         }
     }
 }
