@@ -103,4 +103,5 @@ struct WorkoutSheetView: View {
 
 #Preview {
     WorkoutSheetView(currentDetent: .constant(.height(400)))
+        .environmentObject(WorkoutViewModel())
 }
