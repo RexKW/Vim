@@ -15,6 +15,8 @@ struct MonsterView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var monsters : [Monster]
     //@Query(sort: \Monster.name) private var monsters :[Monster]
+    //health bar sesuaikan dengan kal latest
+    //button back 
     //predict berdasarkan status first jika done maka next
     
 //    let monster: [Monster] = [
@@ -40,7 +42,8 @@ struct MonsterView: View {
                         VStack{
                             //monster name
                             Text(proggresmonster!.name).fontWeight(.heavy).padding(.bottom,-5)
-                            HealthBar(value: proggresmonster!.hp)
+                            HealthBar(latesthp: 100, hpmax: proggresmonster!.hp) //latest hp adalah kalori yang dibakar
+                            //HealthBar(value: proggresmonster!.hp)
                                 .onAppear{
                                     print(proggresmonster!.hp)
                                 }
@@ -88,57 +91,68 @@ struct MonsterView: View {
             }
             .background(.white)
         }
-        
+        .navigationBarBackButtonHidden(true)
     }
 }
 
-func HealthBar(value: Int) -> some View {
-    ZStack{
-        ZStack(alignment: .leading){
-            //This is just for the red border
+func HealthBar(latesthp: Int, hpmax: Int) -> some View {
+    let totalBarWidth: CGFloat = 200 // Kita perkecil sedikit agar totalnya tetap 250-an
+    let percentage = max(0, min(CGFloat(latesthp) / CGFloat(max(1, hpmax)), 1.0))
+    let dynamicWidth = totalBarWidth * percentage
+
+    return HStack(spacing: -25) { // Gunakan spacing negatif agar hati "menggigit" sedikit bagian bar
+        
+        // 1. Ikon Hati (Diletakkan paling depan/kiri)
+        ZStack {
             Rectangle()
-                .frame(width: 250, height: 40)
+                .frame(width: 50, height: 40)
+                .foregroundColor(.red)
+                .cornerRadius(50)
+            
+            Image(systemName: "heart.fill")
+                .font(.system(size: 20))
+                .foregroundColor(.white)
+        }
+        .zIndex(1) // Memastikan hati berada di atas bar secara visual
+        
+        // 2. Kontainer Bar Kesehatan
+        ZStack(alignment: .leading) {
+            // Border Merah
+            Rectangle()
+                .frame(width: totalBarWidth + 10, height: 40)
                 .cornerRadius(50)
                 .foregroundColor(.red)
             
-            //This is for the white backdrop of the health
-            ZStack(alignment: .leading){
-                ZStack(alignment:.center){
+            // Isi Bar (Putih & Hijau)
+            ZStack(alignment: .leading) {
+                // Background Putih
+                ZStack {
                     Rectangle()
-                        .frame(width: 245, height: 30)
+                        .frame(width: totalBarWidth, height: 30)
                         .cornerRadius(50)
                         .foregroundColor(.white)
-                    Text(String(value)).foregroundColor(Color.red).fontWeight(Font.Weight.black)
-                }
-
-                ZStack(alignment:.center){
                     
-                    //This is the green Healthbar to show shrinking
-                    Text(String(value)).foregroundColor(Color.white).fontWeight(Font.Weight.black).frame(width: 245, height: 30).background(Color.green).mask(
-                        HStack {
-                            Rectangle()
-                                .frame(width:120) //Edit the size here to shrink
-                            Spacer(minLength: 0)
-                        }
-                    )
-                }.clipShape(Rectangle()).frame(width: 245)
+                    Text("\(latesthp) / \(hpmax) Kcal").foregroundColor(.red).fontWeight(.black).font(.system(size: 12))
+                }
                 
-            }.clipShape(Capsule())
-
-            //This is the leftside heart
-            Rectangle()
-                .frame(width: 60, height: 40)
-                .foregroundColor(Color.red)
-                .cornerRadius(50)
-            Image(systemName: "heart.fill")
-                .font(.system(size: 24))
-                .foregroundColor(Color.white)
-                .frame(width: 60, height: 50)
-                .cornerRadius(14)
+                // Bar Hijau dengan Masking
+                ZStack {
+                    Text("\(latesthp)").foregroundColor(.white).fontWeight(.black).font(.system(size: 12))
+                        .frame(width: totalBarWidth, height: 30)
+                        .background(Color.green)
+                        .mask(
+                            HStack(spacing: 0) {
+                                Rectangle().frame(width: dynamicWidth)
+                                Spacer(minLength: 0)
+                            }
+                        )
+                }
+            }
+            .clipShape(Capsule())
+            .padding(.leading, 5) // Memberikan jarak agar tidak tertutup hati
         }
-
-
     }
+    .animation(.interactiveSpring(), value: dynamicWidth)
 }
 
 #Preview {
