@@ -9,9 +9,13 @@ import SwiftUI
 
 struct JourneySheetDetailView: View {
     let monster: Monster
-
+    
     var body: some View {
-        Text("Hello World")
+        VStack {
+            Text("Detail for \(monster.name)")
+        }
+        .navigationTitle(monster.name)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
