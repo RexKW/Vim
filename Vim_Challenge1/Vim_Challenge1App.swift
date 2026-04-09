@@ -18,6 +18,7 @@ struct Vim_Challenge1App: App {
                 .environmentObject(workoutViewModel)
                 .modelContainer(for: [Monster.self])
                 .modelContainer(for: User.self)
+                .modelContainer(for: Session.self)
         }
     }
 }

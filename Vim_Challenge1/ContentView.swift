@@ -8,12 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-        
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
+    
     var body: some View {
-        MonsterView()
+        if hasCompletedOnboarding == true {
+            MonsterView()
+        }
+        else {
+            SplashScreenView(isFinished: $hasCompletedOnboarding)
+        }
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(WorkoutViewModel())
 }
