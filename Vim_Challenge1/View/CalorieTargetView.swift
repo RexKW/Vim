@@ -163,10 +163,11 @@ struct CalorieTargetView: View {
     }
 
     func saveInitialHP() {
+        // rex :nambah if else jika monster pertama sudah dikalahkan next ke mosnter selanjutnya
         if let monster = current_monster {            monster.hp = value
         } else {
             let newmonster = Monster(
-                name: "New Monster",
+                name: "rex",
                 hp: value
             )
             modelContext.insert(newmonster)
