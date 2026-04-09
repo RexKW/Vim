@@ -118,7 +118,7 @@ struct CalorieTargetView: View {
                 }
             }
             .navigationDestination(isPresented: $shouldNavigate) {
-                MonsterListView()
+                MonsterView()
             }
         }
     }
@@ -169,8 +169,7 @@ struct CalorieTargetView: View {
             print("Masuk?")
         } else {
             let newmonster = Monster(
-                name: "rex",
-                hp: value
+                name: "Rex Mohawk", hp: value, image: "Rex", deadImage: "", status: "In Progress"
             )
             modelContext.insert(newmonster)
             do{
@@ -186,3 +185,8 @@ struct CalorieTargetView: View {
 #Preview {
     CalorieTargetView()
 }
+
+//Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
+//Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
+//Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
+//Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
