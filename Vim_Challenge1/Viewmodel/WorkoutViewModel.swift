@@ -253,7 +253,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
                             if let monster = self.progressMonster {
                                 
                                 // Deal chunk damage (1 kcal * 5 damage = 5 total damage per strike)
-                                let damage = Double(caloriesPerAttack * 5.0)
+                                let damage = Double(caloriesPerAttack)
                                 print("💥 BOOM! Monster took \(damage) damage!")
                                 
                                 monster.currentHp = max(0, monster.currentHp - damage)

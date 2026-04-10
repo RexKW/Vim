@@ -66,7 +66,7 @@ struct MonsterView: View {
                                 isWorkout = true
                             }){
                                 Text("Attack").foregroundColor(.white).padding(.horizontal, 90).padding(.vertical, 10)
-                            }.buttonStyle(BorderedProminentButtonStyle()).padding(.bottom,60)
+                            }.buttonStyle(BorderedProminentButtonStyle()).padding(.bottom,60).tint(.darkBlue)
                         }
                         
                     }
@@ -140,7 +140,7 @@ func HealthBar(value: Double, maxValue: Double) -> some View {
                     Text("\(Int(value)) Kcal" ).foregroundColor(Color.white).fontWeight(Font.Weight.black).padding(.leading, 20).frame(width: 245, height: 30).background(Color.green).mask(
                         HStack {
                             Rectangle()
-                                .frame(width: CGFloat(value) / CGFloat(maxValue) * 245) //Edit the size here to shrink
+                                .frame(width: Double(value) / Double(maxValue) * 245) //Edit the size here to shrink
                             Spacer(minLength: 0)
                         }
                     )
