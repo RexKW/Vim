@@ -72,7 +72,8 @@ struct JourneyView: View {
 
 
 #Preview {
-    JourneyView(isJourney: .constant(true),
+    JourneyView(
+        isJourney: .constant(true),
                 monster: [
                     Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
                     Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),

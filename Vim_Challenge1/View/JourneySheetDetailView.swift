@@ -114,7 +114,7 @@ struct JourneySheetDetailView: View {
                             VStack(alignment: .trailing){
                                 
                                 HStack(spacing: 5){
-                                    Text("\(String(format: "%.2f",session.caloriesBurned))")
+                                    Text("\(String(format: "%.1f",session.caloriesBurned))")
                                         .fontWeight(.bold)
                                     Text("kcal Burned")
                                         .font(.subheadline)
