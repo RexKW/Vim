@@ -5,7 +5,7 @@ struct CalorieTargetView: View {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @Environment(\.modelContext) private var modelContext
     @State private var select_index = 0
-    @State private var value: Int = 500
+    @State private var value: Double = 500
     @State private var shouldNavigate = false
     @State private var isInitial: Bool = true
     @Query private var monsters: [Monster]
@@ -91,7 +91,7 @@ struct CalorieTargetView: View {
                         .onAppear() {
                             if let lastDeadMonster = monsters.last(where: { $0.status == "Dead" }) {
                                 self.value = lastDeadMonster.hp
-                                valueswitchautomatic(value: lastDeadMonster.hp)
+                                valueswitchautomatic(value: Int(lastDeadMonster.hp))
                             }
                         }
                     Text("Kcal")
