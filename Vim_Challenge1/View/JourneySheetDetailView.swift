@@ -156,6 +156,7 @@ struct JourneySheetDetailView: View {
 #Preview {
     JourneySheetDetailView(isJourney: .constant(true),
         monster: Monster(
+            id: 0,
             name: "Rex Mohawk",
             hp: 0,
             image: "Rex",

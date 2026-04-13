@@ -78,6 +78,7 @@ struct MonsterView: View {
                             .tint(.blue)
                     }
                 }
+                .toolbar(isWorkout ? .hidden : .visible)
                 //sheet for workout
             }.sheet(isPresented: $isWorkout){
                 WorkoutSheetView( currentDetent: $selectedDetent)

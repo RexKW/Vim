@@ -23,7 +23,8 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     
     
     func setMonster(_ monsters: [Monster]) {
-        self.progressMonster = monsters.first(where: { $0.status != "Done" })
+        self.progressMonster = monsters.first(where: { $0.status == "In Progress" })
+        // So only in progress monster on MonsterView
     }
     
     private var pauseStartDate: Date?
@@ -246,6 +247,8 @@ class WorkoutViewModel: NSObject ,ObservableObject {
                         self.calorieDamageBucket += rawDelta
                         
                         // 2. Set your attack threshold (e.g., 1 full kcal = 1 attack)
+                        
+                        //MARK: HAPUS 1000 JADI 1.0
                         let caloriesPerAttack = 1.0 // 👈 Tweak this! Higher = less frequent, bigger attacks
                         
                         // 3. Only deal damage when the bucket is full
