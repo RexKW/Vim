@@ -1,56 +1,15 @@
 import SwiftUI
 import SwiftData
 
-struct MonsterListView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Monster.name) private var monsters: [Monster]
-
-    var body: some View {
-        NavigationStack {
-            List(monsters) { monster in
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(monster.name)
-                        .font(.headline)
-                    
-                    HStack {
-                        Image(systemName: "heart.fill") // Icon hati kecil
-                            .foregroundColor(.red)
-                        Text("HP: \(monster.hp)")
-                        
-                        Spacer()
-                        
-                        Text(monster.status)
-                            .font(.caption)
-                            .italic()
-                    }
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                }
-            }
-            .navigationTitle("Monsters")
-            .onAppear {
-                print("Jumlah monster saat ini: \(monsters.count)")
-            }
-        }
-    }
-}
-
 struct JourneySheetDetailView: View {
     @Binding var isJourney: Bool
     
     let monster: Monster
     
-    //dummy
-//    var sessions: [Session] = [
-//        Session(name: "Session 1", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 1))!, duration: 310, caloriesBurned: 50),
-//        Session(name: "Session 2", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 1))!, duration: 383, caloriesBurned: 60),
-//        Session(name: "Session 3", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 2))!, duration: 534, caloriesBurned: 72),
-//        Session(name: "Session 4", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 3))!, duration: 920, caloriesBurned: 80),
-//        Session(name: "Session 5", timeStamp: Calendar.current.date(from: DateComponents(year: 2026, month: 4, day: 4))!, duration: 1021, caloriesBurned: 110),
-//    ]
-    
     var totalCalories: Double {
         monster.sessions.reduce(0) { $0 + $1.caloriesBurned }
+        // reduce: menggabungkan semua isi dalam sebuah array menjadi satu nilai
+        // { $0 + $1.caloriesBurned }: nambah nilai sebelumnya (tampung) + nilai berikutnya/nilai yg skrg diproses
     }
 
     var progressText: String {
@@ -106,11 +65,13 @@ struct JourneySheetDetailView: View {
                             VStack(alignment: .leading) {
                                 Text(session.name).font(.headline)
                                 
-                                Text(session.timeStamp.formatted(date: .abbreviated, time: .omitted))
+                                Text(session.timeStamp.formatted(date: .abbreviated, time: .omitted)) //omitted: ga muncul
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
+                            
                             Spacer()
+                            
                             VStack(alignment: .trailing){
                                 
                                 HStack(spacing: 5){
@@ -165,40 +126,3 @@ struct JourneySheetDetailView: View {
         )
     )
 }
-
-//import SwiftUI
-//import SwiftData
-//
-//struct MonsterListView: View {
-//    @Environment(\.modelContext) private var modelContext
-//    @Query(sort: \Monster.name) private var monsters: [Monster]
-//
-//    var body: some View {
-//        NavigationStack {
-//            List(monsters) { monster in
-//                VStack(alignment: .leading, spacing: 5) {
-//                    Text(monster.name)
-//                        .font(.headline)
-//                    
-//                    HStack {
-//                        Image(systemName: "heart.fill") // Icon hati kecil
-//                            .foregroundColor(.red)
-//                        Text("HP: \(monster.hp)")
-//                        
-//                        Spacer()
-//                        
-//                        Text(monster.status)
-//                            .font(.caption)
-//                            .italic()
-//                    }
-//                    .font(.subheadline)
-//                    .foregroundColor(.secondary)
-//                }
-//            }
-//            .navigationTitle("Monsters")
-//            .onAppear {
-//                print("Jumlah monster saat ini: \(monsters.count)")
-//            }
-//        }
-//    }
-//}
