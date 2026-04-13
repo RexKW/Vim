@@ -4,10 +4,11 @@ import SwiftUI
 struct CalorieTargetView: View {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var workoutVM: WorkoutViewModel
     @State private var select_index = 0
     @State private var value: Double = 1
     @State private var shouldNavigate = false
-    @State private var isInitial: Bool = true
+    @Environment(\.dismiss) private var dismiss
     @Query private var monsters: [Monster]
     
     // Pindahkan logika perhitungan steps ke luar body agar bersih dan tidak error
@@ -16,8 +17,8 @@ struct CalorieTargetView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            if isInitial {
+        VStack {
+            if !hasCompletedOnboarding {
                 // view for initial target calories, first download
                 reusedView(
                     title: "Initial Target Calories",
@@ -31,6 +32,10 @@ struct CalorieTargetView: View {
                     caption: "You took down the monster and \ncrushed your exercise. Victory feels good!\nReady to plan your next move?")
             }
         }
+        // navigate to MonsterView after setting initial calories
+        .navigationDestination(isPresented: $shouldNavigate) {
+                    MonsterView()
+                }
     }
 
     // Fungsi pembantu untuk tombol plus minus
@@ -104,7 +109,7 @@ struct CalorieTargetView: View {
             
             // Gunakan variabel 'steps' yang sudah didefinisikan di atas
             VStack(alignment: .leading) {
-                Text("This is equivalent to :")
+                Text("This is equivalent to f:")
                 Text("- **\(steps) steps** on the run.")
                 Text("- **\(steps / 2) stairs steps.**")
             }
@@ -117,9 +122,24 @@ struct CalorieTargetView: View {
                 .padding(.bottom, 18)
             
             Button(action: {
+                // save changes to SwiftData
                 saveInitialHP()
-                isInitial = false
-                shouldNavigate = true
+                
+                if !hasCompletedOnboarding {
+                    // for initial set calories
+                    hasCompletedOnboarding = true
+                    shouldNavigate = true
+                }
+                else{
+                    // generating next monster
+                    workoutVM.setMonster(monsters)
+                    
+                    // reset isDead to false and go back to MonsterView
+                    workoutVM.isDead = false
+                    dismiss()
+                }
+
+
             }) {
                 Text("Set Target")
                     .font(.system(size: 18))
@@ -214,11 +234,13 @@ struct CalorieTargetView: View {
             if let currentActive = allmonster.first(where: { $0.status == "In Progress" }) {
                 // if there is an active monster, update hp
                 currentActive.hp = Double(value)
+                currentActive.currentHp = Double(value)
             } else {
                 //If there is no 'In Progress' monster (meaning the previous one is 'Done'), find the first 'Locked' monster and activate it.
                 if let nextMonster = allmonster.first(where: { $0.status == "Locked" }) {
                     nextMonster.status = "In Progress"
                     nextMonster.hp = Double(value) // set hp with new target
+                    nextMonster.currentHp = Double(value)
                 }
             }
         }
@@ -228,5 +250,6 @@ struct CalorieTargetView: View {
 }
 #Preview {
     CalorieTargetView()
+        .environmentObject(WorkoutViewModel())
 }
 

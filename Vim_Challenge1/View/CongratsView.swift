@@ -8,40 +8,43 @@
 import SwiftUI
 
 struct CongratsView: View {
+    @EnvironmentObject var workoutVM: WorkoutViewModel
+    @State private var isPresented: Bool = false
+    
     var body: some View {
-        NavigationStack{
-            Text("Congratulations! 🎉")
-                .font(.system(size: 34, weight: .bold))
-                .multilineTextAlignment(.center)
-            Text("You defeated the monster! What's next for your goal?")
-                .padding(.top,-1)
-                .multilineTextAlignment(.center)
-            Image(.deadRex)
-                .resizable()
-                .frame(width: 180, height: 200)
-                .padding(.top, 20)
-            
-            NavigationLink(destination: CalorieTargetView()) {
-                ZStack {
-                    Capsule()
-                        .foregroundColor(.darkBlue)
-                    
+        NavigationStack {
+            VStack{
+                Text("Congratulations! 🎉")
+                    .font(.system(size: 34, weight: .bold))
+                    .multilineTextAlignment(.center)
+                Text("You defeated the monster! What's next for your goal?")
+                    .padding(.top,-1)
+                    .multilineTextAlignment(.center)
+                Image(.deadRex)
+                    .resizable()
+                    .frame(width: 180, height: 200)
+                    .padding(.top, 20)
+                
+                Button (action: {
+                    isPresented = true
+                }){
                     Text("Set Calories")
                         .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .foregroundColor(.white)
+                        .padding(.horizontal, 110)
                 }
-                .frame(height: 60)
-                .padding(.horizontal, 45)
-                .padding(.top, 50)
-                
+                .buttonStyle(.borderedProminent)
+                .tint(.darkBlue)
+                .padding(.top, 60)
+            }
+            .navigationDestination(isPresented: $isPresented) {
+                CalorieTargetView()
             }
         }
-        
     }
 }
 
 #Preview {
     CongratsView()
+        .environmentObject(WorkoutViewModel())
 }

@@ -45,8 +45,6 @@ struct MonsterView: View {
     
     
     var body: some View {
-        
-        
         VStack{
             NavigationStack(path: $workoutVM.navigationPath){
                 ZStack{
@@ -133,7 +131,7 @@ struct MonsterView: View {
             }
             .fullScreenCover(isPresented: $workoutVM.isDead) {
                     CongratsView()
-                }
+            }
             //sheet for journey
             .sheet(isPresented: $isJourney){
                 JourneyView(isJourney: $isJourney, monster: monsters)

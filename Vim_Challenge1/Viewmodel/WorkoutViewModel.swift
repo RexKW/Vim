@@ -298,10 +298,15 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     @MainActor
     /// func to kill monster
     func killMonster(monster: Monster){
+        // stop HealthKit session
         endWorkout()
+        
+        // set current monster status to Dead
         monster.status = "Dead"
+        
+        // for triggering CongratsView
         isDead = true
-            
+        try? modelContext?.save()
     }
     
     //    /// This is for starting the timer when the workout sheet appear
