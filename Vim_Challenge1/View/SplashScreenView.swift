@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SplashScreenView: View {
-    @Binding var isFinished: Bool
     
     var body: some View {
         NavigationStack {
@@ -88,7 +87,7 @@ struct SplashScreenView: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: PrivacyView(isFinished: $isFinished)) {
+                NavigationLink(destination: PrivacyView()) {
                     ZStack {
                         Capsule()
                             .foregroundColor(.darkBlue)
@@ -109,5 +108,5 @@ struct SplashScreenView: View {
 }
 
 #Preview {
-    SplashScreenView(isFinished: .constant(false))
+    SplashScreenView()
 }

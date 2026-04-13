@@ -2,11 +2,13 @@ import SwiftData
 import SwiftUI
 
 struct CalorieTargetView: View {
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @Environment(\.modelContext) private var modelContext
     @State private var select_index = 0
-    @State private var value: Int = 500
+    @State private var value: Double = 500
     @State private var shouldNavigate = false
-    @Binding var isFinished: Bool
+    @State private var isInitial: Bool = true
+    @Query private var monsters: [Monster]
     
     // Pindahkan logika perhitungan steps ke luar body agar bersih dan tidak error
     private var steps: Int {
@@ -15,80 +17,20 @@ struct CalorieTargetView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("Initial target Calories")
-                    .font(.system(size: 22))
-                    .bold()
-                    .padding(.bottom, 9)
-                
-                Text("Everybody starts somewhere! Chose \nthe target caloriest that suits your ability \nand daily routine")
-                    .font(.system(size: 17))
-                    .padding(.bottom, 41)
-                    .multilineTextAlignment(.center)
-                
-                Picker("Difficulty", selection: $select_index) {
-                    Text("Easy").tag(0)
-                    Text("Medium").tag(1)
-                    Text("Hard").tag(2)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(maxWidth: 250)
-                .padding(.bottom, 20)
-                .scaleEffect(1.2)
-                .onChange(of: value) { _, newValue in
-                    valueswitchautomatic(value: Int(newValue))
-                }
-                .onChange(of: select_index) { _, newValue in
-                    updateValueFromPicker(newValue)
-                }
-
-                HStack {
-                    buttonminmax(plusorminus: "minus")
-                    VStack(spacing: 2) {
-                        Text("\(value)")
-                            .font(.system(size: 60, weight: .bold))
-                        Text("Kcal")
-                            .font(.system(size: 22, weight: .bold))
-                    }
-                    .frame(maxWidth: .infinity)
-                    buttonminmax(plusorminus: "plus")
-                }
-                .frame(maxWidth: 270)
-                .padding(.bottom, 40)
-                
-                // Gunakan variabel 'steps' yang sudah didefinisikan di atas
-                VStack(alignment: .leading) {
-                    Text("This is equivalent to :")
-                    Text("- **\(steps) steps** on the run.")
-                    Text("- **\(steps / 2) stairs steps.**")
-                }
-                .padding(.bottom, 100)
-                
-                Text("The target calorie can be completed anytime, but **2 weeks of inactivity** will result in a **reset**")
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(.center)
-                    .padding(.bottom, 18)
-                
-                Button(action: {
-                    saveInitialHP()
-                    isFinished = true
-                    shouldNavigate = true
-                    
-                }) {
-                    Text("Set Target")
-                        .font(.system(size: 18))
-                        .bold()
-                        .foregroundColor(.white)
-                        .frame(width: 272, height: 48)
-                        .background(Color.blue)
-                        .cornerRadius(24)
-                }
+            if isInitial {
+                // view for initial target calories, first download
+                reusedView(
+                    title: "Initial Target Calories",
+                    caption: "Everybody starts somewhere! Chose \nthe target caloriest that suits your ability \nand daily routine"
+                    )
             }
-            .navigationDestination(isPresented: $shouldNavigate) {
-                MonsterView()
+            else{
+                // view for after defeating monster
+                reusedView(
+                    title: "Step Up Your Game",
+                    caption: "You took down the monster and \ncrushed your exercise. Victory feels good!\nReady to plan your next move?")
             }
-            .navigationBarBackButtonHidden()
+            
         }
     }
 
@@ -111,7 +53,89 @@ struct CalorieTargetView: View {
                 )
         }
     }
+    
+    /// for using the target calorie view
+    func reusedView(title: String, caption: String) -> some View {
+        VStack {
+            Text(title)
+                .font(.system(size: 22))
+                .bold()
+                .padding(.bottom, 9)
+            
+            Text(caption)
+                .font(.system(size: 17))
+                .padding(.bottom, 41)
+                .multilineTextAlignment(.center)
+            
+            Picker("Difficulty", selection: $select_index) {
+                Text("Easy").tag(0)
+                Text("Medium").tag(1)
+                Text("Hard").tag(2)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .frame(maxWidth: 250)
+            .padding(.bottom, 20)
+            .scaleEffect(1.2)
+            .onChange(of: value) { _, newValue in
+                valueswitchautomatic(value: Int(newValue))
+            }
+            .onChange(of: select_index) { _, newValue in
+                updateValueFromPicker(newValue)
+            }
 
+            HStack {
+                buttonminmax(plusorminus: "minus")
+                VStack(spacing: 2) {
+                    Text("\(value)")
+                        .font(.system(size: 60, weight: .bold))
+                        .onAppear() {
+                            if let lastDeadMonster = monsters.last(where: { $0.status == "Dead" }) {
+                                self.value = lastDeadMonster.hp
+                                valueswitchautomatic(value: Int(lastDeadMonster.hp))
+                            }
+                        }
+                    Text("Kcal")
+                        .font(.system(size: 22, weight: .bold))
+                }
+                .frame(maxWidth: .infinity)
+                buttonminmax(plusorminus: "plus")
+            }
+            .frame(maxWidth: 270)
+            .padding(.bottom, 40)
+            
+            // Gunakan variabel 'steps' yang sudah didefinisikan di atas
+            VStack(alignment: .leading) {
+                Text("This is equivalent to :")
+                Text("- **\(steps) steps** on the run.")
+                Text("- **\(steps / 2) stairs steps.**")
+            }
+            .padding(.bottom, 100)
+            
+            Text("The target calorie can be completed anytime, but **2 weeks of inactivity** will result in a **reset**")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 18)
+            
+            Button(action: {
+                saveInitialHP()
+                isInitial = false
+                shouldNavigate = true
+            }) {
+                Text("Set Target")
+                    .font(.system(size: 18))
+                    .bold()
+                    .foregroundColor(.white)
+                    .frame(width: 272, height: 48)
+                    .background(Color.blue)
+                    .cornerRadius(24)
+            }
+        }
+        .navigationDestination(isPresented: $shouldNavigate) {
+            MonsterView()
+        }
+    }
+    
     // Memperbaiki logika switch agar tidak berulang-ulang
     func updateValueFromPicker(_ index: Int) {
         switch index {
@@ -203,6 +227,6 @@ struct CalorieTargetView: View {
     }
 }
 #Preview {
-    CalorieTargetView(isFinished: .constant(false))
+    CalorieTargetView()
 }
 
