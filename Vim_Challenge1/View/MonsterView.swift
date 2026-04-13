@@ -18,6 +18,7 @@ struct MonsterView: View {
     @State private var fightMotivationText: String = ""
     
     @Environment(\.modelContext) private var modelContext
+    
     @Query private var monsters : [Monster]
     //@Query(sort: \Monster.name) private var monsters :[Monster]
     //health bar sesuaikan dengan kal latest
@@ -124,7 +125,15 @@ struct MonsterView: View {
                     .presentationDetents(
                         [.height(200), .height(400)],
                         selection: $selectedDetent)
+                    .onChange(of: workoutVM.isDead) { died in
+                        if died {
+                            isWorkout = false
+                        }
+                    }
             }
+            .fullScreenCover(isPresented: $workoutVM.isDead) {
+                    CongratsView()
+                }
             //sheet for journey
             .sheet(isPresented: $isJourney){
                 JourneyView(isJourney: $isJourney, monster: monsters)
@@ -137,11 +146,6 @@ struct MonsterView: View {
             //            workoutVM.setupHealthKit()
         }
         .navigationBarBackButtonHidden(true)
-        .navigationDestination(for: String.self) { value in
-            if value == "CongratsView"{
-                CongratsView()
-            }
-        }
         
     }
 }

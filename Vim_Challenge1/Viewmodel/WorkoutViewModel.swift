@@ -18,6 +18,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     @Published var metrics = WorkoutMetrics()
     @Published var progressMonster: Monster?
     @Published var navigationPath = NavigationPath()
+    @Published var isDead = false
     
     private var calorieDamageBucket: Double = 0
     private var lastCalories: Double = 0
@@ -299,7 +300,8 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     func killMonster(monster: Monster){
         endWorkout()
         monster.status = "Dead"
-        navigationPath.append("CongratsView")
+        isDead = true
+            
     }
     
     //    /// This is for starting the timer when the workout sheet appear

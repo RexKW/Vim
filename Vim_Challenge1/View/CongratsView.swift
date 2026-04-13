@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CongratsView: View {
     var body: some View {
-        NavigationStack {
+        NavigationStack{
             Text("Congratulations! 🎉")
                 .font(.system(size: 34, weight: .bold))
                 .multilineTextAlignment(.center)
@@ -38,6 +38,7 @@ struct CongratsView: View {
                 
             }
         }
+        
     }
 }
 
