@@ -15,21 +15,33 @@ struct MonsterView: View {
     @State private var isJourney: Bool = false
     @State private var isFloating = false
     @State private var selectedDetent: PresentationDetent = .height(300)
+    @State private var fightMotivationText: String = ""
     
     @Environment(\.modelContext) private var modelContext
     @Query private var monsters : [Monster]
     //@Query(sort: \Monster.name) private var monsters :[Monster]
     //health bar sesuaikan dengan kal latest
-    //button back 
+    //button back
     //predict berdasarkan status first jika done maka next
     
-//    let monster: [Monster] = [
-//            Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
-//            Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
-//            Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
-//            Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
-//
-//    ]
+    //    let monster: [Monster] = [
+    //            Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
+    //            Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
+    //            Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
+    //            Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
+    //
+    //    ]
+    
+    var fightMotivation: [String] = [
+        "Unleash your first strike! Start moving to deal damage ⚔️",
+        "Ignite the flames! Burn calories to weaken the beast 🔥",
+        "Don't let the enemy breathe, charge now! 🏃‍♂️",
+        "Your sweat is your ammunition. Load up and attack! 💥",
+        "Initiate the hunt! Every step is a blow to the monster 👺",
+        "Convert your burned calories into a lethal blow. Start the session! ❤️‍🔥",
+        "The battle begins with a single step. Strike hard! ⚡️"
+    ]
+    
     
     var body: some View {
         
@@ -40,14 +52,14 @@ struct MonsterView: View {
                     //monster including background
                     Image("Backdrop").resizable().edgesIgnoringSafeArea(.all)
                     Image(workoutVM.progressMonster?.image ?? "Unknow Image").resizable().frame(width: 300, height: 400).offset(x: 0, y: isFloating ? 0 : 40)
-//                        .animation(
-//                            .easeInOut(duration: 1.5).repeatForever(autoreverses: true),
-//                            value: isFloating
-//                        )
+                    //                        .animation(
+                    //                            .easeInOut(duration: 1.5).repeatForever(autoreverses: true),
+                    //                            value: isFloating
+                    //                        )
                         .onAppear {
                             withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                                    isFloating = true
-                                }
+                                isFloating = true
+                            }
                         }
                     VStack{
                         VStack{
@@ -57,6 +69,19 @@ struct MonsterView: View {
                                 .onAppear{
                                     print(workoutVM.progressMonster?.currentHp ?? 0)
                                 }
+                            
+                            //MARK: - Fight "motivation" Text
+                            Text(fightMotivationText)
+                                .multilineTextAlignment(.center)
+                                .font(.footnote)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 50)
+                                .onAppear {
+                                    fightMotivationText = fightMotivation.randomElement() ?? "Fight!"
+                                }
+                            
+                            
                         }
                         
                         Spacer()
@@ -76,7 +101,7 @@ struct MonsterView: View {
                         //session section
                         VStack{
                             Text("Session \(((workoutVM.progressMonster?.sessions.count ?? 0) + 1))").foregroundStyle(.white).fontWeight(.bold)
-      
+                            
                             Text(Date.now.formatted(date: .abbreviated, time: .omitted)).foregroundColor(.white)
                         }.fixedSize()
                     }.sharedBackgroundVisibility(.hidden)
@@ -109,7 +134,7 @@ struct MonsterView: View {
         .onAppear {
             workoutVM.modelContext = modelContext
             workoutVM.setMonster(monsters)
-//            workoutVM.setupHealthKit()
+            //            workoutVM.setupHealthKit()
         }
         .navigationBarBackButtonHidden(true)
         
@@ -134,7 +159,7 @@ func HealthBar(value: Double, maxValue: Double) -> some View {
                         .foregroundColor(.white)
                     Text("\(Int(value)) Kcal").foregroundColor(Color.red).fontWeight(Font.Weight.black).padding(.leading, 20)
                 }
-
+                
                 ZStack(alignment:.center){
                     
                     //This is the green Healthbar to show shrinking
@@ -147,18 +172,18 @@ func HealthBar(value: Double, maxValue: Double) -> some View {
                     )
                 }.clipShape(Rectangle()).frame(width: 245)
                 
-            
+                
             }
             .clipShape(Capsule())
             Rectangle()
-                            .frame(width: 60, height: 40)
-                            .foregroundColor(Color.red)
-                            .cornerRadius(50)
-                        Image(systemName: "heart.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(Color.white)
-                            .frame(width: 60, height: 50)
-                            .cornerRadius(14)
+                .frame(width: 60, height: 40)
+                .foregroundColor(Color.red)
+                .cornerRadius(50)
+            Image(systemName: "heart.fill")
+                .font(.system(size: 24))
+                .foregroundColor(Color.white)
+                .frame(width: 60, height: 50)
+                .cornerRadius(14)
         }
     }
     .animation(.interactiveSpring(), value: CGFloat(value) / CGFloat(maxValue) * 245)
