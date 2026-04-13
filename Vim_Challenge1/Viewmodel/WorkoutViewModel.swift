@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import HealthKit
+import SwiftUI
 import _SwiftData_SwiftUI
 
 class WorkoutViewModel: NSObject ,ObservableObject {
@@ -16,6 +17,7 @@ class WorkoutViewModel: NSObject ,ObservableObject {
     @Published var currentState: WorkoutState = .idle
     @Published var metrics = WorkoutMetrics()
     @Published var progressMonster: Monster?
+    @Published var navigationPath = NavigationPath()
     
     private var calorieDamageBucket: Double = 0
     private var lastCalories: Double = 0
@@ -261,6 +263,10 @@ class WorkoutViewModel: NSObject ,ObservableObject {
                                 
                                 monster.currentHp = max(0, monster.currentHp - damage)
                                 
+                                if monster.currentHp <= 0 {
+                                    self.killMonster(monster: monster)
+                                }
+                                
                                 do {
                                     try self.modelContext?.save()
                                 } catch {
@@ -286,6 +292,14 @@ class WorkoutViewModel: NSObject ,ObservableObject {
             }
         }
         
+    }
+    
+    @MainActor
+    /// func to kill monster
+    func killMonster(monster: Monster){
+        endWorkout()
+        monster.status = "Dead"
+        navigationPath.append("CongratsView")
     }
     
     //    /// This is for starting the timer when the workout sheet appear

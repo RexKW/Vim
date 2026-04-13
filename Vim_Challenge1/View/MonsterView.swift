@@ -47,7 +47,7 @@ struct MonsterView: View {
         
         
         VStack{
-            NavigationStack(){
+            NavigationStack(path: $workoutVM.navigationPath){
                 ZStack{
                     //monster including background
                     Image("Backdrop").resizable().edgesIgnoringSafeArea(.all)
@@ -137,6 +137,11 @@ struct MonsterView: View {
             //            workoutVM.setupHealthKit()
         }
         .navigationBarBackButtonHidden(true)
+        .navigationDestination(for: String.self) { value in
+            if value == "CongratsView"{
+                CongratsView()
+            }
+        }
         
     }
 }

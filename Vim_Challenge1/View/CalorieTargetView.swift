@@ -5,7 +5,7 @@ struct CalorieTargetView: View {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @Environment(\.modelContext) private var modelContext
     @State private var select_index = 0
-    @State private var value: Double = 500
+    @State private var value: Double = 1
     @State private var shouldNavigate = false
     @State private var isInitial: Bool = true
     @Query private var monsters: [Monster]
@@ -30,7 +30,6 @@ struct CalorieTargetView: View {
                     title: "Step Up Your Game",
                     caption: "You took down the monster and \ncrushed your exercise. Victory feels good!\nReady to plan your next move?")
             }
-            
         }
     }
 
@@ -86,7 +85,7 @@ struct CalorieTargetView: View {
             HStack {
                 buttonminmax(plusorminus: "minus")
                 VStack(spacing: 2) {
-                    Text("\(value)")
+                    Text("\(Int(value))")
                         .font(.system(size: 60, weight: .bold))
                         .onAppear() {
                             if let lastDeadMonster = monsters.last(where: { $0.status == "Dead" }) {
@@ -134,6 +133,7 @@ struct CalorieTargetView: View {
         .navigationDestination(isPresented: $shouldNavigate) {
             MonsterView()
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     // Memperbaiki logika switch agar tidak berulang-ulang
