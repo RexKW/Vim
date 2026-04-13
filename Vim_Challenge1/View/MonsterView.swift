@@ -18,18 +18,6 @@ struct MonsterView: View {
     
     @Environment(\.modelContext) private var modelContext
     @Query private var monsters : [Monster]
-    //@Query(sort: \Monster.name) private var monsters :[Monster]
-    //health bar sesuaikan dengan kal latest
-    //button back 
-    //predict berdasarkan status first jika done maka next
-    
-//    let monster: [Monster] = [
-//            Monster(name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
-//            Monster(name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
-//            Monster(name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
-//            Monster(name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
-//
-//    ]
     
     var body: some View {
         
