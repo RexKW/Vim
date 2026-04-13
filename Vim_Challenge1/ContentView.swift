@@ -15,7 +15,7 @@ struct ContentView: View {
             MonsterView()
         }
         else {
-            SplashScreenView(isFinished: $hasCompletedOnboarding)
+            SplashScreenView()
         }
     }
 }

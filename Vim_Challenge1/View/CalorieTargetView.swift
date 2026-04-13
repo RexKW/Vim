@@ -2,11 +2,11 @@ import SwiftData
 import SwiftUI
 
 struct CalorieTargetView: View {
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
     @Environment(\.modelContext) private var modelContext
     @State private var select_index = 0
     @State private var value: Int = 500
     @State private var shouldNavigate = false
-    @Binding var isFinished: Bool
     
     // Pindahkan logika perhitungan steps ke luar body agar bersih dan tidak error
     private var steps: Int {
@@ -72,7 +72,7 @@ struct CalorieTargetView: View {
                 
                 Button(action: {
                     saveInitialHP()
-                    isFinished = true
+                    hasCompletedOnboarding = true
                     shouldNavigate = true
                     
                 }) {
@@ -159,6 +159,6 @@ struct CalorieTargetView: View {
     }
 }
 #Preview {
-    CalorieTargetView(isFinished: .constant(false))
+    CalorieTargetView()
 }
 

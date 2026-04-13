@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PrivacyView: View {
-    @Binding var isFinished: Bool
     @State private var isPresentedContinue: Bool = false
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var workoutVM: WorkoutViewModel
@@ -62,13 +61,13 @@ struct PrivacyView: View {
         .padding(.horizontal, 40)
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $isPresentedContinue) {
-            CalorieTargetView(isFinished: $isFinished)
+            CalorieTargetView()
         }
     }
 }
 
 #Preview {
-    PrivacyView(isFinished: .constant(false))
+    PrivacyView()
         .environmentObject(WorkoutViewModel())
 }
 
