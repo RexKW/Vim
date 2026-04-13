@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 class Monster{
+    var id: Int
     var name: String
     var status: String
     var hp: Double
@@ -18,7 +19,8 @@ class Monster{
     var image: String
     var deadImage: String
     
-    init(name: String,  hp: Double, image:String, deadImage:String, status:String) {
+    init(id: Int, name: String,  hp: Double, image:String, deadImage:String, status:String) {
+        self.id = id
         self.name = name
         self.status = status
         self.hp = hp

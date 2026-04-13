@@ -68,6 +68,7 @@ struct MonsterCardView: View {
 #Preview {
     MonsterCardView(
         monster: Monster(
+            id: 0, 
             name: "Rex Mohawk",
             hp: 0,
             image: "Rex",

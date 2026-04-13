@@ -129,33 +129,77 @@ struct CalorieTargetView: View {
         }
     }
 
+//    func saveInitialHP() {
+//        let monsterque = [
+//            (name: "Rex Mohawk", image: "Rex"),
+//            (name: "AdamDevil", image: "AdamDevil"),
+//            (name: "Jojomblo", image: "Jojomblo"),
+//            (name: "Unknown", image: "UnknownMonster")
+//        ]
+//        
+//        let descriptor = FetchDescriptor<Monster>()
+//        let allmonster = (try? modelContext.fetch(descriptor)) ?? []
+//        let currentActive = allmonster.first { $0.status == "In Progress" }
+//        let countDone = allmonster.filter { $0.status == "Done" }.count
+//        
+//        if let monster = currentActive {
+//            monster.hp = Double(value)
+//        } else if countDone < monsterque.count {
+//            let nextData = monsterque[countDone]
+//            let newmonster = Monster(
+//                name: nextData.name,
+//                hp: Double(value),
+//                image: nextData.image,
+//                deadImage: "",
+//                status: "In Progress"
+//            )
+//            modelContext.insert(newmonster)
+//            try? modelContext.save()
+//        }
+//    }
+    
+    //MARK: funv saveInitialHP
     func saveInitialHP() {
-        let monsterque = [
-            (name: "Rex Mohawk", image: "Rex"),
-            (name: "AdamDevil", image: "AdamDevil"),
-            (name: "Jojomblo", image: "Jojomblo"),
-            (name: "Unknown", image: "UnknownMonster")
-        ]
-        
-        let descriptor = FetchDescriptor<Monster>()
+        let descriptor = FetchDescriptor<Monster>(sortBy: [SortDescriptor(\.id, order: .forward)])
         let allmonster = (try? modelContext.fetch(descriptor)) ?? []
-        let currentActive = allmonster.first { $0.status == "In Progress" }
-        let countDone = allmonster.filter { $0.status == "Done" }.count
         
-        if let monster = currentActive {
-            monster.hp = Double(value)
-        } else if countDone < monsterque.count {
-            let nextData = monsterque[countDone]
-            let newmonster = Monster(
-                name: nextData.name,
-                hp: Double(value),
-                image: nextData.image,
-                deadImage: "",
-                status: "In Progress"
-            )
-            modelContext.insert(newmonster)
-            try? modelContext.save()
+        // if hasnt input the monster
+        if allmonster.isEmpty {
+            let monsterque = [
+                (name: "Rex Mohawk", image: "Rex"),
+                (name: "AdamDevil", image: "AdamDevil"),
+                (name: "Jojomblo", image: "Jojomblo"),
+                (name: "Unknown", image: "UnknownMonster")
+            ]
+            
+            for (index, data) in monsterque.enumerated() {
+                let initialStatus = (index == 0) ? "In Progress" : "Locked"
+                let initialHP = (index == 0) ? Double(value) : 0.0
+                
+                let newMonster = Monster(id: index,
+                                         name: data.name,
+                                         hp: initialHP,
+                                         image: data.image,
+                                         deadImage: "",
+                                         status: initialStatus)
+                //insert monsterdata
+                modelContext.insert(newMonster)
+            }
+        } else {
+            
+            if let currentActive = allmonster.first(where: { $0.status == "In Progress" }) {
+                // if there is an active monster, update hp
+                currentActive.hp = Double(value)
+            } else {
+                //If there is no 'In Progress' monster (meaning the previous one is 'Done'), find the first 'Locked' monster and activate it.
+                if let nextMonster = allmonster.first(where: { $0.status == "Locked" }) {
+                    nextMonster.status = "In Progress"
+                    nextMonster.hp = Double(value) // set hp with new target
+                }
+            }
         }
+        
+        try? modelContext.save()
     }
 }
 #Preview {
