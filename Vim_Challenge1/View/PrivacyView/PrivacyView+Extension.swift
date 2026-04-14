@@ -7,12 +7,18 @@
 
 import SwiftUI
 
-struct PrivacyView_Extension: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+extension PrivacyView {
+    func privacyInfo(icon: String, desc: String, height: Int) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .resizable()
+                .frame(width: 20, height: CGFloat(height))
+                .scaledToFit()
+                .foregroundColor(.brightRed)
+            Text(desc)
+                .font(.system(size: 10, weight: .regular))
+                .padding(.horizontal, 0)
+        }
     }
-}
 
-#Preview {
-    PrivacyView_Extension()
 }

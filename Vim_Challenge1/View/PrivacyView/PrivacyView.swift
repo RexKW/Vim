@@ -71,15 +71,3 @@ struct PrivacyView: View {
         .environmentObject(WorkoutViewModel())
 }
 
-func privacyInfo(icon: String, desc: String, height: Int) -> some View {
-    HStack {
-        Image(systemName: icon)
-            .resizable()
-            .frame(width: 20, height: CGFloat(height))
-            .scaledToFit()
-            .foregroundColor(.brightRed)
-        Text(desc)
-            .font(.system(size: 10, weight: .regular))
-            .padding(.horizontal, 0)
-    }
-}

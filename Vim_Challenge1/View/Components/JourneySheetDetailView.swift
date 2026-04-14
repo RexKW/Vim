@@ -52,7 +52,7 @@ struct JourneySheetDetailView: View {
                 Text("Total Calories Burned:")
                     .font(.title2)
                 
-                Text("\(String(format: "%.2f",totalCalories))")
+                Text("\(String(format: "%.1f",totalCalories))")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.bottom,16)

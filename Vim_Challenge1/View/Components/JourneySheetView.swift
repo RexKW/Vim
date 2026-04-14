@@ -45,7 +45,7 @@ struct JourneySheetView: View {
                         
                     }
                     .padding(.horizontal,16)
-
+                    
                     
                     Spacer()
                 }
@@ -69,15 +69,13 @@ struct JourneySheetView: View {
     }
 }
 
-
-
 #Preview {
     JourneySheetView(
         isJourney: .constant(true),
-                monster: [
-                    Monster(id: 0, name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
-                    Monster(id: 1, name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
-                    Monster(id: 2, name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
-                    Monster(id: 3, name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
-                ])
+        monster: [
+            Monster(id: 0, name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
+            Monster(id: 1, name: "AdamDevil", hp: 0, image: "AdamDevil", deadImage: "", status: "Locked"),
+            Monster(id: 2, name: "Jojomblo", hp: 0, image: "Jojomblo", deadImage: "", status: "Locked"),
+            Monster(id: 3, name: "Unknown", hp: 0, image: "UnknownMonster", deadImage: "", status: "Coming Soon")
+        ])
 }
