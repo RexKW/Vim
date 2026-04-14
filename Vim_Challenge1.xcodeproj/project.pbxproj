@@ -105,12 +105,6 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXBuildRule section */
-									/* End PBXBuildRule section */
-
-/* Begin PBXBuildFile section */
-/* End PBXBuildFile section */
-
 /* Begin PBXResourcesBuildPhase section */
 		CC7183032F848C5D00D9D787 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;

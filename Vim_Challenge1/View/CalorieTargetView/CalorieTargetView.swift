@@ -209,7 +209,7 @@ struct CalorieTargetView: View {
         
         // if hasnt input the monster
         if allmonster.isEmpty {
-            let monsterque = [
+            let monsterque: [(name: String, image: String, deadImage: String)] = [
                 (name: "Rex Mohawk", image: "Rex", deadImage: "DeadRex"),
                 (name: "AdamDevil", image: "AdamDevil", deadImage: "DeadAdam"),
                 (name: "Jojomblo", image: "Jojomblo", deadImage: "DeadJosan"),

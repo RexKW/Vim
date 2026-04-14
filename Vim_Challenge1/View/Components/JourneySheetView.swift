@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct JourneyView: View {
+struct JourneySheetView: View {
     @Binding var isJourney: Bool
     
     let monster: [Monster]
@@ -72,7 +72,7 @@ struct JourneyView: View {
 
 
 #Preview {
-    JourneyView(
+    JourneySheetView(
         isJourney: .constant(true),
                 monster: [
                     Monster(id: 0, name: "Rex Mohawk", hp: 0, image: "Rex", deadImage: "", status: "In Progress"),
